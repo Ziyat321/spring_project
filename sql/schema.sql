@@ -38,30 +38,44 @@ create table characteristics_descriptions
 
 create table user
 (
-    id serial8,
-    role int2 not null ,
-    login varchar unique not null ,
-    password varchar not null ,
-    first_name varchar not null,
-    last_name varchar not null,
-    sign_up_date timestamp not null,
+    id           serial8,
+    role         int2           not null,
+    login        varchar unique not null,
+    password     varchar        not null,
+    first_name   varchar        not null,
+    last_name    varchar        not null,
+    sign_up_date timestamp      not null,
     primary key (id)
 );
 
-create table order(
-  id serial8,
-  user_id int8,
-  status int2,
-  order_date timestamp,
-  primary key (id),
-  foreign key (user_id) references user(id)
+create table order
+(
+    id         serial8,
+    user_id    int8,
+    status     int2,
+    order_date timestamp,
+    primary key (id),
+    foreign key (user_id) references user (id)
 );
 
-create table order_product(
-    id serial8,
-    order_id int8,
+create table order_product
+(
+    id         serial8,
+    order_id   int8,
     product_id int8,
-    foreign key (order_id) references order(id),
-    foreign key (product_id) references product(id),
+    foreign key (order_id) references order (id),
+    foreign key (product_id) references product (id),
     primary key (id)
+);
+
+create table review
+(
+    id          serial8,
+    user_id     int8      not null,
+    published   boolean   not null,
+    rating      int2 check (rating between 1 and 5),
+    commentary  varchar   not null,
+    review_date timestamp not null,
+    primary key (id),
+    foreign key (user_id) references user (id)
 );
