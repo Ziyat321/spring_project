@@ -5,7 +5,7 @@ create table category
     primary key (id)
 );
 
-create table characteristics
+create table characteristic
 (
     id          serial8,
     category_id int8    not null,
@@ -20,19 +20,20 @@ create table product
     id          serial8,
     category_id int8,
     name        varchar not null,
+    price       int4    not null,
     visibility  boolean not null,
     primary key (id),
     foreign key (category_id) references category (id)
 );
 
-create table characteristics_descriptions
+create table characteristic_description
 (
-    id                 serial8,
-    characteristics_id int8,
-    product_id         int8,
-    description        varchar not null,
+    id                serial8,
+    characteristic_id int8,
+    product_id        int8,
+    description       varchar not null,
     primary key (id),
-    foreign key (characteristics_id) references characteristics (id),
+    foreign key (characteristic_id) references characteristic (id),
     foreign key (product_id) references product (id)
 );
 
@@ -63,6 +64,7 @@ create table order_product
     id         serial8,
     order_id   int8,
     product_id int8,
+    amount     int2,
     foreign key (order_id) references order (id),
     foreign key (product_id) references product (id),
     primary key (id)
@@ -72,10 +74,12 @@ create table review
 (
     id          serial8,
     user_id     int8      not null,
+    product_id  int8      not null,
     published   boolean   not null,
     rating      int2 check (rating between 1 and 5),
     commentary  varchar   not null,
     review_date timestamp not null,
     primary key (id),
-    foreign key (user_id) references user (id)
+    foreign key (user_id) references user (id),
+    foreign key (product_id) references product (id)
 );
