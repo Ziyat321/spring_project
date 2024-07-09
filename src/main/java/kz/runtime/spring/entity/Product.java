@@ -25,6 +25,9 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "product")
+    private List<Cart> carts;
+
     @Column(name = "name")
     private String name;
 
@@ -96,5 +99,13 @@ public class Product {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 }

@@ -37,7 +37,7 @@ create table characteristic_description
     foreign key (product_id) references product (id)
 );
 
-create table user
+create table "user"
 (
     id           serial8,
     role         int2           not null,
@@ -49,14 +49,14 @@ create table user
     primary key (id)
 );
 
-create table order
+create table "order"
 (
     id         serial8,
     user_id    int8,
     status     int2,
     order_date timestamp,
     primary key (id),
-    foreign key (user_id) references user (id)
+    foreign key (user_id) references "user" (id)
 );
 
 create table order_product
@@ -65,7 +65,7 @@ create table order_product
     order_id   int8,
     product_id int8,
     amount     int2,
-    foreign key (order_id) references order (id),
+    foreign key (order_id) references "order" (id),
     foreign key (product_id) references product (id),
     primary key (id)
 );
@@ -80,6 +80,18 @@ create table review
     commentary  varchar   not null,
     review_date timestamp not null,
     primary key (id),
-    foreign key (user_id) references user (id),
+    foreign key (user_id) references "user" (id),
+    foreign key (product_id) references product (id)
+);
+
+
+create table cart
+(
+    id         serial8,
+    user_id    int8 not null,
+    product_id int8 not null,
+    amount     int4 not null,
+    primary key (id),
+    foreign key (user_id) references "user" (id),
     foreign key (product_id) references product (id)
 );

@@ -24,19 +24,22 @@ public class User {
     private String password;
 
     @Column(name = "first_name")
-    private String first_name;
+    private String firstName;
 
     @Column(name = "last_name")
-    private String last_name;
+    private String lastName;
 
     @Column(name = "sign_up_date")
-    private LocalDateTime sign_up_date;
+    private LocalDateTime signUpDate;
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
+
+    @OneToMany(mappedBy = "user")
+    private List<Cart> carts;
 
     public List<Order> getOrders() {
         return orders;
@@ -78,28 +81,28 @@ public class User {
         this.password = password;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String first_name) {
+        this.firstName = first_name;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String last_name) {
+        this.lastName = last_name;
     }
 
-    public LocalDateTime getSign_up_date() {
-        return sign_up_date;
+    public LocalDateTime getSignUpDate() {
+        return signUpDate;
     }
 
-    public void setSign_up_date(LocalDateTime sign_up_date) {
-        this.sign_up_date = sign_up_date;
+    public void setSignUpDate(LocalDateTime sign_up_date) {
+        this.signUpDate = sign_up_date;
     }
 
     public List<Review> getReviews() {
@@ -108,5 +111,13 @@ public class User {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 }
