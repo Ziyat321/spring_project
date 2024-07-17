@@ -5,9 +5,9 @@
     <title>ViewController.secondResource</title>
 </head>
 <body>
-<form method="get" action="view_resource_2_page.html" style="margin-bottom: 10px">
+<form method="get" action="/view_controller/resource_2" style="margin-bottom: 10px">
     <label>Введите возраст:</label></br>
-    <input type="text">
+    <input type="text" name="age" th:placeholder="${age}">
     <button>Отфильтровать</button>
 </form>
 
