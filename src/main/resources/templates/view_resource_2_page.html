@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ViewController.secondResource</title>
+</head>
+<body>
+<form method="get" action="view_resource_2_page.html" style="margin-bottom: 10px">
+    <label>Введите возраст:</label></br>
+    <input type="text">
+    <button>Отфильтровать</button>
+</form>
+
+<div th:each="human: ${humans}" style="margin-bottom: 10px">
+    <div><span>Name: </span><span th:text="${human.name}"></span></div>
+    <div><span>Age: </span><span th:text="${human.age}"></span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ViewController.firstResource</title>
+</head>
+<body>
+<th:block th:if="${human.age} >= 18">
+    <div><span>Name: </span><span th:text="${human.name}"></span></div>
+    <div><span>Age: </span><span th:text="${human.age}"></span></div>
+</th:block>
+
+
+<p th:if="${human.age} < 18">Information absent because of the person's age.</p>
+</body>
+</html>
