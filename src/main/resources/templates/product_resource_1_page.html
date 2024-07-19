@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ProductController.firstResource</title>
+</head>
+<body>
+<th:block th:each="product : ${products}">
+    <div th:text="${product.getName()}"></div>
+</th:block>
+</body>
+</html>
