@@ -5,8 +5,11 @@
     <title>ProductController.firstResource</title>
 </head>
 <body>
+<a href="/create_product">
+    <button style="cursor: pointer; margin-bottom: 5px">Создать товар</button>
+</a>
 <th:block th:each="product : ${products}">
-    <div th:text="${product.getName()}"></div>
+    <div style="margin-bottom: 5px" th:text="${product.getName()}"></div>
 </th:block>
 </body>
 </html>

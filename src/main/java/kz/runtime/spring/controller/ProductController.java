@@ -37,4 +37,12 @@ public class ProductController {
         return "product_resource_1_page";
     }
 
+    @GetMapping(path = "/create_product")
+    public String createProduct(
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "product", required = false) String product
+    ){
+        return "product_creation";
+    }
+
 }
