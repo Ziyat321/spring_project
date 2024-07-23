@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choice of a category</title>
+</head>
+<body>
+<form method="post" action="/create_product">
+    <p><select name="categoryId">
+        <option disabled selected>Выберите категорию</option>
+        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+    </select>
+    </p>
+    <p>
+        <input type="submit" value="Сохранить">
+    </p>
+</form>
+</body>
+</html>

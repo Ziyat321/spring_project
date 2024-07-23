@@ -1,20 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Creation of a new product</title>
 </head>
 <body>
-<form>
-    <p><select name="category">
-        <option disabled selected>Выберите категорию</option>
-        <option value="Processors">Processors</option>
-        <option value="Monitors">Monitors</option>
-    </select>
+<form method="post" action="/products">
+    <input type="hidden" name="categoryId" th:value="${category.id}">
+    <p>
+        <label>Категория: </label></br>
+        <input type="text" th:value="${category.name}" readonly>
     </p>
     <p>
         <label>Введите название товара: </label></br>
         <input type="text" name="product">
+    </p>
+    <p>
+        <label>Введите цену товара: </label></br>
+        <input type="text" name="price">
+    </p>
+    <p>
+        <th:block th:each="characteristic : ${characteristics}">
+            <label th:text="${characteristic.name}"></label></br>
+            <input type="text" name="description"></br></br>
+        </th:block>
     </p>
     <p>
         <input type="submit" value="Отправить">
