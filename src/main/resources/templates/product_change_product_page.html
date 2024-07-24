@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post" action="/products/change">
+
+    <input type="hidden" name="productId" th:value="${product.getId()}">
+
+    <p>
+        <label>Категория товара: </label></br>
+        <select name="categoryId">
+            <option disabled selected th:text="${product.getCategory().getName()}"
+                    th:value="${product.getCategory().getName()}"></option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.getId()}"
+                    th:text="${category.getName()}">
+        </select>
+    </p>
+
+    <p>
+        <label>Название товара: </label></br>
+        <input type="text" name="name" th:placeholder="${product.getName()}">
+    </p>
+
+    <p>
+        <label>Цена товара: </label></br>
+        <input type="text" name="price" th:placeholder="${product.getPrice()}">
+    </p>
+
+    <p>
+        <th:block th:each="ob : ${map.keySet()}">
+            <label th:text="${ob.getName()}"></label><br/>
+            <input type="text" name="description" th:placeholder="${map.get(ob).getDescription()}"><br/><br/>
+        </th:block>
+    </p>
+
+    <button type="submit">Save</button>
+
+</form>
+</body>
+</html>

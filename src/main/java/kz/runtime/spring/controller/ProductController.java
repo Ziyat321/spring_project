@@ -15,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ProductController {
@@ -50,12 +52,8 @@ public class ProductController {
         return "category_choice";
     }
 
-    @GetMapping(path = "/create_product")
-    public String createProduct() {
-        return "product_creation";
-    }
 
-    @PostMapping(path = "/create_product")
+    @GetMapping(path = "/create_product")
     public String fillProduct(
             Model model,
             @RequestParam(name = "categoryId", required = false) Long categoryId
@@ -68,9 +66,8 @@ public class ProductController {
         return "product_creation";
     }
 
-    @PostMapping(path = "/products")
-    public String saveProduct(Model model,
-                              @RequestParam(name = "categoryId", required = false) Long categoryId,
+    @PostMapping(path = "/create_product")
+    public String saveProduct(@RequestParam(name = "categoryId", required = false) Long categoryId,
                               @RequestParam(name = "product", required = false) String product,
                               @RequestParam(name = "price", required = false) Integer price,
                               @RequestParam(name = "description", required = false) String... description) {
@@ -94,9 +91,97 @@ public class ProductController {
                 characteristicDescriptionRepository.save(characteristicDescription);
             }
         }
-        List<Product> products = productRepository.findAll();
-        model.addAttribute("products", products);
-        return "product_resource_1_page";
+        return "redirect:/products";
+    }
+
+    @GetMapping(path = "/products/change")
+    public String changeProduct(@RequestParam(name = "productId", required = false) Long productId,
+                                Model model) {
+
+        Product product = productRepository.findById(productId).orElseThrow();
+        List<Category> categories = categoryRepository.findAll();
+        List<Characteristic> characteristics = product.getCategory().getCharacteristics();
+        List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
+
+        Map<Characteristic, CharacteristicDescription> map = new HashMap<>();
+
+
+        for (Characteristic characteristic : characteristics) {
+            boolean exists = false;
+            for (CharacteristicDescription characteristicDescription : characteristicDescriptions) {
+                if (characteristicDescription.getCharacteristic().getName().equals(characteristic.getName())) {
+                    map.put(characteristic, characteristicDescription);
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                CharacteristicDescription cd = new CharacteristicDescription();
+                cd.setDescription("");
+                map.put(characteristic, cd);
+            }
+        }
+
+
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categories);
+        model.addAttribute("map", map);
+
+        return "product_change_product_page";
+    }
+
+    @PostMapping(path = "/products/change")
+    public String saveChangedProduct(@RequestParam(name = "productId", required = false) Long productId,
+                                     @RequestParam(name = "categoryId", required = false) Long categoryId,
+                                     @RequestParam(name = "name", required = false) String name,
+                                     @RequestParam(name = "price", required = false) Integer price,
+                                     @RequestParam(name = "description", required = false) String... description) {
+
+
+        Product product = productRepository.findById(productId).orElseThrow();
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId).orElseThrow();
+            product.setCategory(category);
+        }
+        if (name != null && !name.isEmpty()) {
+            product.setName(name);
+        }
+        if (price != null) {
+            product.setPrice(price);
+        }
+        productRepository.save(product);
+
+        List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
+        for (int i = 0; i < description.length; i++) {
+            if (description[i] != null && !description[i].isEmpty()) {
+                boolean exists = false;
+                CharacteristicDescription characteristicDescription = new CharacteristicDescription();
+                if (!characteristicDescriptions.isEmpty()) {
+                    for (CharacteristicDescription characteristicDescription1 : characteristicDescriptions) {
+                        if (characteristicDescription1.getCharacteristic().getName().equals(
+                                product.getCategory().getCharacteristics().get(i).getName()
+                        )) {
+                            exists = true;
+                            characteristicDescription = characteristicDescription1;
+                            break;
+                        }
+                    }
+                }
+                if(!exists){
+                    characteristicDescription.setDescription(description[i]);
+                    characteristicDescription.setProduct(product);
+                    characteristicDescription.setCharacteristic(product.getCategory().getCharacteristics().get(i));
+                    characteristicDescriptionRepository.save(characteristicDescription);
+                } else{
+                    characteristicDescription.setDescription(description[i]);
+                    characteristicDescriptionRepository.save(characteristicDescription);
+                }
+
+            }
+        }
+
+
+        return "redirect:/products";
     }
 
 }

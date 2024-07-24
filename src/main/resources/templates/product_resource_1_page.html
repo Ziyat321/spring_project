@@ -10,6 +10,9 @@
 </a>
 <th:block th:each="product : ${products}">
     <div style="margin-bottom: 5px" th:text="${product.getName()}"></div>
+    <form method="get" action="/products/change">
+        <button type="submit" name="productId" th:value="${product.getId()}">Edit</button>
+    </form>
 </th:block>
 </body>
 </html>

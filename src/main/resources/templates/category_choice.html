@@ -5,7 +5,7 @@
     <title>Choice of a category</title>
 </head>
 <body>
-<form method="post" action="/create_product">
+<form method="get" action="/create_product">
     <p><select name="categoryId">
         <option disabled selected>Выберите категорию</option>
         <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
