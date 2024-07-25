@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post" action ="/products/change_characteristics">
+    <input type="hidden" name="productId" th:value="${product.getId()}">
+
+    <p>
+        <label>Категория товара: </label></br>
+        <input type="text" name="category" th:value="${product.getCategory().getName()}" readonly>
+    </p>
+
+    <p>
+        <label>Название товара: </label></br>
+        <input type="text" name="name" th:value="${product.getName()}" readonly>
+    </p>
+
+    <p>
+        <label>Цена товара: </label></br>
+        <input type="text" name="price" th:value="${product.getPrice()}" readonly>
+    </p>
+
+    <p>
+        <th:block th:each="ob : ${map.keySet()}">
+            <label th:text="${ob.getName()}"></label><br/>
+            <input type="text" name="description" th:placeholder="${map.get(ob).getDescription()}"><br/><br/>
+        </th:block>
+    </p>
+
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

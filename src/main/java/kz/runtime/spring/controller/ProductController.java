@@ -100,45 +100,46 @@ public class ProductController {
 
         Product product = productRepository.findById(productId).orElseThrow();
         List<Category> categories = categoryRepository.findAll();
-        List<Characteristic> characteristics = product.getCategory().getCharacteristics();
-        List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
+//        List<Characteristic> characteristics = product.getCategory().getCharacteristics();
+//        List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
 
-        Map<Characteristic, CharacteristicDescription> map = new HashMap<>();
+//        Map<Characteristic, CharacteristicDescription> map = new HashMap<>();
 
 
-        for (Characteristic characteristic : characteristics) {
-            boolean exists = false;
-            for (CharacteristicDescription characteristicDescription : characteristicDescriptions) {
-                if (characteristicDescription.getCharacteristic().getName().equals(characteristic.getName())) {
-                    map.put(characteristic, characteristicDescription);
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                CharacteristicDescription cd = new CharacteristicDescription();
-                cd.setDescription("");
-                map.put(characteristic, cd);
-            }
-        }
+//        for (Characteristic characteristic : characteristics) {
+//            boolean exists = false;
+//            for (CharacteristicDescription characteristicDescription : characteristicDescriptions) {
+//                if (characteristicDescription.getCharacteristic().getName().equals(characteristic.getName())) {
+//                    map.put(characteristic, characteristicDescription);
+//                    exists = true;
+//                    break;
+//                }
+//            }
+//            if (!exists) {
+//                CharacteristicDescription cd = new CharacteristicDescription();
+//                cd.setDescription("");
+//                map.put(characteristic, cd);
+//            }
+//        }
 
 
         model.addAttribute("product", product);
         model.addAttribute("categories", categories);
-        model.addAttribute("map", map);
+//        model.addAttribute("map", map);
 
         return "product_change_product_page";
     }
 
     @PostMapping(path = "/products/change")
-    public String saveChangedProduct(@RequestParam(name = "productId", required = false) Long productId,
+    public String saveChangedProduct(Model model,
+                                     @RequestParam(name = "productId", required = false) Long productId,
                                      @RequestParam(name = "categoryId", required = false) Long categoryId,
                                      @RequestParam(name = "name", required = false) String name,
-                                     @RequestParam(name = "price", required = false) Integer price,
-                                     @RequestParam(name = "description", required = false) String... description) {
+                                     @RequestParam(name = "price", required = false) Integer price) {
 
 
         Product product = productRepository.findById(productId).orElseThrow();
+        Long oldCategoryId = product.getCategory().getId();
         if (categoryId != null) {
             Category category = categoryRepository.findById(categoryId).orElseThrow();
             product.setCategory(category);
@@ -151,6 +152,68 @@ public class ProductController {
         }
         productRepository.save(product);
 
+
+
+
+        return "redirect:/products/change_characteristics?productId="
+                + product.getId()
+                + "&oldCategoryId=" + oldCategoryId;
+    }
+
+    @GetMapping(path = "/products/change_characteristics")
+    public String changeCharacteristics(
+            Model model,
+            @RequestParam(name = "productId", required = false) Long productId,
+            @RequestParam(name = "oldCategoryId", required = false) Long oldCategoryId
+    ) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        Category category = product.getCategory();
+        Long categoryId = category.getId();
+        Map<Characteristic, CharacteristicDescription> map = new HashMap<>();
+
+        if (categoryId.equals(oldCategoryId)) {
+            List<Characteristic> characteristics = product.getCategory().getCharacteristics();
+            List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
+
+
+            for (Characteristic characteristic : characteristics) {
+                boolean exists = false;
+                for (CharacteristicDescription characteristicDescription : characteristicDescriptions) {
+                    if (characteristicDescription.getCharacteristic().getName().equals(characteristic.getName())) {
+                        map.put(characteristic, characteristicDescription);
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    CharacteristicDescription cd = new CharacteristicDescription();
+                    cd.setDescription("");
+                    map.put(characteristic, cd);
+                }
+            }
+        } else {
+            List<Characteristic> characteristics = category.getCharacteristics();
+            for (Characteristic characteristic : characteristics) {
+                map.put(characteristic, new CharacteristicDescription());
+            }
+            List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
+            characteristicDescriptionRepository.deleteAll(characteristicDescriptions);
+        }
+
+
+        model.addAttribute("product", product);
+        model.addAttribute("map", map);
+
+        return "characteristics_describe";
+    }
+
+    @PostMapping(path = "/products/change_characteristics")
+    public String saveChangedCharacteristics(
+            Model model,
+            @RequestParam(name = "productId", required = false) Long productId,
+            @RequestParam(name = "description", required = false) String... description
+    ) {
+        Product product = productRepository.findById(productId).orElseThrow();
         List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
         for (int i = 0; i < description.length; i++) {
             if (description[i] != null && !description[i].isEmpty()) {
@@ -167,20 +230,18 @@ public class ProductController {
                         }
                     }
                 }
-                if(!exists){
+                if (!exists) {
                     characteristicDescription.setDescription(description[i]);
                     characteristicDescription.setProduct(product);
                     characteristicDescription.setCharacteristic(product.getCategory().getCharacteristics().get(i));
                     characteristicDescriptionRepository.save(characteristicDescription);
-                } else{
+                } else {
                     characteristicDescription.setDescription(description[i]);
                     characteristicDescriptionRepository.save(characteristicDescription);
                 }
 
             }
         }
-
-
         return "redirect:/products";
     }
 
