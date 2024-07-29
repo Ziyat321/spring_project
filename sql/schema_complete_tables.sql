@@ -14,9 +14,16 @@ values (1, 'Ryzen-Threadripper-PRO-7995WX', 10000, true),
        (2, 'Dell UltraSharp U3425WE', 1148, true);
 
 insert into characteristic(category_id, name)
-values (1, 'Количество ядер'),
-       (1, 'Количество потоков'),
-       (1, 'Базовая частота (ГГц)'),
-       (1,'Дата выхода'),
-       (2, 'Разрешение'),
-       (2, 'Размер экрана');
+values (4, 'Количество ядер'),
+       (4, 'Количество потоков'),
+       (4, 'Базовая частота (ГГц)'),
+       (4,'Дата выхода'),
+       (5, 'Разрешение'),
+       (5, 'Размер экрана');
+
+insert into "user" (role, login, password, first_name, last_name, sign_up_date)
+values (1, 'user984', 'greatest_programmer', 'John', 'Norton', '2024-07-29 12:53:00');
+
+insert into review (user_id, product_id, published, rating, commentary, review_date)
+values (1, 1, true, 4, 'Ryzen Threadripper PRO 7995WX is 42.4x faster than Core i5-7300U. It can run Fortnite at ' ||
+                       'recommended settings according to Epic Games.', '2024-07-29 14:25:00')

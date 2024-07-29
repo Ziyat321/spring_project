@@ -245,4 +245,12 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    @GetMapping(path = "/view_product")
+    public String viewProduct(Model model,
+                              @RequestParam (name = "productId", required = true) Long productId){
+        Product product = productRepository.findById(productId).orElseThrow();
+        model.addAttribute(product);
+        return "product_view";
+    }
+
 }

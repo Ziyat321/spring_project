@@ -76,12 +76,13 @@ create table review
     user_id     int8      not null,
     product_id  int8      not null,
     published   boolean   not null,
-    rating      int2 check (rating between 1 and 5),
+    rating      int2 check (rating between 1 and 5) not null,
     commentary  varchar   not null,
     review_date timestamp not null,
     primary key (id),
     foreign key (user_id) references "user" (id),
-    foreign key (product_id) references product (id)
+    foreign key (product_id) references product (id),
+    unique (user_id, product_id)
 );
 
 

@@ -10,9 +10,15 @@
 </a>
 <th:block th:each="product : ${products}">
     <div style="margin-bottom: 5px" th:text="${product.getName()}"></div>
-    <form method="get" action="/products/change">
-        <button type="submit" name="productId" th:value="${product.getId()}">Edit</button>
-    </form>
+    <div style="display: flex; flex-direction: row">
+        <form method="get" action="/products/change">
+            <button type="submit" name="productId" th:value="${product.getId()}"
+                    style="margin-right: 5px">Edit</button>
+        </form>
+        <form method="get" action="/view_product">
+            <button type="submit" name="productId" th:value="${product.getId()}">View</button>
+        </form>
+    </div>
 </th:block>
 </body>
 </html>
