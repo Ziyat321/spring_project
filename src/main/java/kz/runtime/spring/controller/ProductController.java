@@ -1,9 +1,6 @@
 package kz.runtime.spring.controller;
 
-import kz.runtime.spring.entity.Category;
-import kz.runtime.spring.entity.Characteristic;
-import kz.runtime.spring.entity.CharacteristicDescription;
-import kz.runtime.spring.entity.Product;
+import kz.runtime.spring.entity.*;
 import kz.runtime.spring.repository.CategoryRepository;
 import kz.runtime.spring.repository.CharacteristicDescriptionRepository;
 import kz.runtime.spring.repository.CharacteristicRepository;
@@ -249,7 +246,15 @@ public class ProductController {
     public String viewProduct(Model model,
                               @RequestParam (name = "productId", required = true) Long productId){
         Product product = productRepository.findById(productId).orElseThrow();
-        model.addAttribute(product);
+        List<Review> reviews = product.getReviews();
+        double avgRating = 0;
+        for (Review review : reviews) {
+            avgRating += review.getRating();
+        }
+        avgRating = avgRating / reviews.size();
+        model.addAttribute("product",product);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("avgRating", avgRating);
         return "product_view";
     }
 

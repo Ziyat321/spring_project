@@ -7,7 +7,7 @@ import org.aspectj.weaver.ast.Or;
 @Table(name = "order_product")
 public class OrderProduct {
     @Id
-    @Column(name = "user")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

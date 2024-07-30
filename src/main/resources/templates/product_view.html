@@ -21,5 +21,12 @@
     <label th:text="${characteristicDescription.getCharacteristic().getName()}"></label></br>
     <input type="text" th:value="${characteristicDescription.getDescription()}" readonly>
 </p>
+<!--<div th:each="review : ${reviews}">-->
+
+<!--</div>-->
+<p>
+    <label>Средний рейтинг товара: </label></br>
+    <input type="text" th:value="${avgRating}" readonly>
+</p>
 </body>
 </html>
