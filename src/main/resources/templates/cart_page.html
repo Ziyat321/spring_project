@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+<th:block th:each="cart:${carts}">
+    <p th:text="${'Название товара: ' + cart.getProduct().name}"></p>
+    <p th:text="${'Количество товара: ' + cart.getAmount()}"></p>
+    <div style="display: flex; flex-direction: row;">
+        <form method="post" action="/products/cart">
+            <input type="hidden" name="cartId" th:value="${cart.id}">
+            <button name="decrement" value="1">-</button>
+            <span th:text="${cart.getAmount()}"></span>
+            <button name="increment" value="1">+</button>
+            <button style="margin-left: 10px;" name="delete" value="1">Delete</button>
+        </form>
+    </div>
+    <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
+</th:block>
+<form method="get" action="/products/update_cart">
+    <button>Main page</button>
+</form>
+
+</body>
+</html>

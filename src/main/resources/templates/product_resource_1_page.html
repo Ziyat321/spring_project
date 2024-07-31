@@ -5,9 +5,15 @@
     <title>ProductController.firstResource</title>
 </head>
 <body>
-<a href="/category_choice">
-    <button style="cursor: pointer; margin-bottom: 5px">Создать товар</button>
-</a>
+<div style="display: flex; flex-direction: row; margin-bottom: 20px;">
+    <a href="/category_choice">
+        <button>Создать товар</button>
+    </a>
+    <a href="/products/cart">
+        <button style="margin-left: 10px">Корзина</button>
+    </a>
+</div>
+
 <div th:each="product : ${products}" style="margin-bottom: 20px">
     <div style="margin-bottom: 5px" th:text="${product.getName()}"></div>
     <div style="display: flex; flex-direction: row">
@@ -17,7 +23,14 @@
             </button>
         </form>
         <form method="get" action="/view_product">
-            <button type="submit" name="productId" th:value="${product.getId()}">View</button>
+            <button type="submit" name="productId" th:value="${product.getId()}"
+                    style="margin-right: 5px">View
+            </button>
+        </form>
+        <form method="get" action="/products/add_to_cart">
+            <button type="submit" name="productId" th:value="${product.getId()}"
+                    style="margin-right: 5px">Add to Cart
+            </button>
         </form>
     </div>
 </div>
