@@ -21,12 +21,39 @@
     <label th:text="${characteristicDescription.getCharacteristic().getName()}"></label></br>
     <input type="text" th:value="${characteristicDescription.getDescription()}" readonly>
 </p>
-<!--<div th:each="review : ${reviews}">-->
-
-<!--</div>-->
-<p>
+<div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
+<div th:each="review : ${reviews}" style="display: inline-flex; flex-direction: column">
+    <div th:text="${'Комментарий от пользователя ' + review.getUser().getLogin() + ':'}"
+         style="margin-bottom: 10px">
+    </div>
+    <div th:text="${review.getCommentary()}"
+         style="width: 250px; border: solid 1px black; border-radius: 5px; padding: 5px 5px 5px 5px;
+         margin-bottom: 2px">
+    </div>
+    <label>Рейтинг товара: </label>
+    <input type="text" th:value="${review.getRating()}" readonly>
+    <div th:text="${review.getReviewDate()}" style="display:flex; flex-direction: row-reverse;
+        padding: 5px 5px 0 0; margin-bottom: 2px"></div>
+</div>
+<div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
+<p style="margin-bottom: 10px">
     <label>Средний рейтинг товара: </label></br>
     <input type="text" th:value="${avgRating}" readonly>
 </p>
+<div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
+<form method="post" action="/save_commentary">
+    <div>
+        <input type="hidden" name="productId" th:value="${product.getId()}">
+        <select name="rating">
+            <option selected>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select></br>
+        <input type="text" th:name="commentary">
+        <input type="submit" value="Отправить">
+    </div>
+</form>
 </body>
 </html>

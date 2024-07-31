@@ -3,6 +3,7 @@ package kz.runtime.spring.controller;
 
 import kz.runtime.spring.entity.Category;
 import kz.runtime.spring.repository.CategoryRepository;
+import kz.runtime.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ public class DataController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+//    @Autowired
+//    private UserService userService;
 
     @GetMapping(path = "/resource_1")
     public Object firstResource(){

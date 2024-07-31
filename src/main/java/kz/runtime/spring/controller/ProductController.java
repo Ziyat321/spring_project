@@ -5,6 +5,7 @@ import kz.runtime.spring.repository.CategoryRepository;
 import kz.runtime.spring.repository.CharacteristicDescriptionRepository;
 import kz.runtime.spring.repository.CharacteristicRepository;
 import kz.runtime.spring.repository.ProductRepository;
+import kz.runtime.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
@@ -256,6 +257,16 @@ public class ProductController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("avgRating", avgRating);
         return "product_view";
+    }
+
+    @PostMapping(path = "/save_commentary")
+    public String saveCommentary(Model model,
+                                 @RequestParam (name = "productId", required = true) Long productId,
+                                 @RequestParam (name = "rating", required = true) Short rating,
+                                 @RequestParam (name = "commentary", required = true) String commentary){
+        UserService userService = new UserService();
+        User user = userService.getCurrentUser();
+        return "redirect: /products";
     }
 
 }
