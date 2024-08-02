@@ -81,8 +81,7 @@ create table review
     review_date timestamp not null,
     primary key (id),
     foreign key (user_id) references "user" (id),
-    foreign key (product_id) references product (id),
-    unique (user_id, product_id)
+    foreign key (product_id) references product (id)
 );
 
 
@@ -96,3 +95,6 @@ create table cart
     foreign key (user_id) references "user" (id),
     foreign key (product_id) references product (id)
 );
+
+alter table review
+add constraint unique_user_product unique (user_id, product_id);

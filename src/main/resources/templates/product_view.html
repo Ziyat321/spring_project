@@ -29,20 +29,24 @@
 </p>
 <div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
 
-<form method="post" action="/save_commentary">
+<form method="post" action="/save_commentary" th:if="${addingReviewAvailable} == true">
     <div>
         <input type="hidden" name="productId" th:value="${product.getId()}">
         <select name="rating">
-            <option selected>1</option>
+            <option selected disabled>Оцените товар</option>
+            <option>1</option>
             <option>2</option>
             <option>3</option>
             <option>4</option>
             <option>5</option>
         </select></br>
-        <input type="text" th:name="commentary">
+        <input type="text" th:name="commentary" placeholder="Оставьте комментарий..." style="margin-top: 4px">
         <input type="submit" value="Отправить">
     </div>
 </form>
+<p th:if="${addingReviewAvailable} == false">
+    Данный пользователь уже оставлял комментарий.
+</p>
 <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
 
 <div style="display: flex; flex-direction: column">

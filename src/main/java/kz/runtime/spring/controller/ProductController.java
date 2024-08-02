@@ -227,15 +227,22 @@ public class ProductController {
     public String viewProduct(Model model,
                               @RequestParam(name = "productId", required = true) Long productId) {
         Product product = productRepository.findById(productId).orElseThrow();
+        User user = userService.getCurrentUser();
         List<Review> reviews = product.getReviews();
         double avgRating = 0;
         for (Review review : reviews) {
             avgRating += review.getRating();
         }
         avgRating = avgRating / reviews.size();
+
+        boolean userWroteReview;
+        Review review = reviewRepository.findByUserAndProduct(user, product).orElse(null);
+        userWroteReview = review != null;
+
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviews);
         model.addAttribute("avgRating", avgRating);
+        model.addAttribute("addingReviewAvailable", !userWroteReview);
         return "product_view";
     }
 
@@ -280,26 +287,32 @@ public class ProductController {
         return "cart_page";
     }
 
-    @PostMapping(path = "/products/cart")
-    public String changeAmountInCart(@RequestParam(name = "decrement", required = false) Integer decrement,
-                                     @RequestParam(name = "increment", required = false) Integer increment,
-                                     @RequestParam(name = "delete", required = false) Integer delete,
-                                     @RequestParam(name = "cartId", required = true) Long cartId) {
+
+    @GetMapping(path = "products/cart/decrement")
+    public String decrementAmountInCart(@RequestParam(name="decrement", required = true)Integer decrement,
+                                        @RequestParam(name = "cartId", required = true) Long cartId){
         Cart cart = cartRepository.findById(cartId).orElseThrow();
-        if(increment != null || decrement != null) {
-            if (increment != null) {
-                cart.setAmount(cart.getAmount() + 1);
-            }
-            if (decrement != null) {
-                if (cart.getAmount() > 0) {
-                    cart.setAmount(cart.getAmount() - 1);
-                }
-            }
-            cartRepository.save(cart);
+        if (cart.getAmount() > 0) {
+            cart.setAmount(cart.getAmount() - 1);
         }
-        if (delete != null) {
-            cartRepository.delete(cart);
-        }
+        cartRepository.save(cart);
+        return "redirect:/products/cart";
+    }
+
+    @GetMapping(path="/products/cart/increment")
+    public String incrementAmountInCart(@RequestParam(name="increment", required = true)Integer increment,
+                                        @RequestParam(name = "cartId", required = true) Long cartId){
+        Cart cart = cartRepository.findById(cartId).orElseThrow();
+        cart.setAmount(cart.getAmount() + 1);
+        cartRepository.save(cart);
+        return "redirect:/products/cart";
+    }
+
+    @GetMapping(path = "/products/cart/delete")
+    public String deleteProductInCart(@RequestParam(name="delete", required = true)Integer delete,
+                                      @RequestParam(name = "cartId", required = true) Long cartId){
+        Cart cart = cartRepository.findById(cartId).orElseThrow();
+        cartRepository.delete(cart);
         return "redirect:/products/cart";
     }
 

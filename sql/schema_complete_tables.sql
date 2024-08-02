@@ -33,4 +33,6 @@ values (1, 'user984', 'greatest_programmer', 'John', 'Norton', '2024-07-29 12:53
 
 insert into review (user_id, product_id, published, rating, commentary, review_date)
 values (1, 8, true, 4, 'Ryzen Threadripper PRO 7995WX is 42.4x faster than Core i5-7300U. It can run Fortnite at ' ||
-                       'recommended settings according to Epic Games.', '2024-07-29 14:25:00')
+                       'recommended settings according to Epic Games.', '2024-07-29 14:25:00');
+
+
