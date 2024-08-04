@@ -25,6 +25,16 @@
     </div>
     <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
 </th:block>
+
+<p>
+    <label>Общая стоимость товаров в корзине: </label></br>
+    <input type="text" th:value="${sum}" disabled>
+</p>
+
+<form method="get" action="/products/place_order">
+    <button>Place the order</button>
+</form>
+<br/>
 <form method="get" action="/products/update_cart">
     <button>Main page</button>
 </form>

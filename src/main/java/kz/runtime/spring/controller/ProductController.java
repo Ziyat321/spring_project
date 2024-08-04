@@ -32,6 +32,10 @@ public class ProductController {
     private ReviewRepository reviewRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderProductRepository orderProductRepository;
 
     @GetMapping(path = "/products")
     public String allProducts(Model model,
@@ -283,7 +287,12 @@ public class ProductController {
     public String cart(Model model) {
         User user = userService.getCurrentUser();
         List<Cart> carts = user.getCarts();
+        double sum = 0;
+        for (Cart cart : carts) {
+            sum += cart.getProduct().getPrice() * cart.getAmount();
+        }
         model.addAttribute("carts", carts);
+        model.addAttribute("sum", sum);
         return "cart_page";
     }
 
@@ -326,5 +335,45 @@ public class ProductController {
             }
         }
         return "redirect:/products";
+    }
+
+
+    @GetMapping(path = "/products/place_order")
+    public String placeOrder(Model model) {
+        User user = userService.getCurrentUser();
+        List<Cart> carts = user.getCarts();
+        if (carts.size() > 0) {
+            Order order = new Order();
+            order.setUser(user);
+            order.setStatus(Status.CREATED);
+            order.setOrderDate(LocalDateTime.now());
+            orderRepository.save(order);
+            for (Cart cart : carts) {
+                OrderProduct orderProduct = new OrderProduct();
+                orderProduct.setOrder(order);
+                orderProduct.setProduct(cart.getProduct());
+                orderProduct.setAmount(cart.getAmount());
+                orderProductRepository.save(orderProduct);
+            }
+            cartRepository.deleteAll(carts);
+        }
+
+
+        List<Order> orders = user.getOrders();
+        System.out.println(orders.size());
+        Map<Long, Integer> orderCosts = new HashMap<>();
+
+        for (Order order1 : orders) {
+            System.out.println(order1.getId());
+            int sum = 0;
+            for (OrderProduct orderProduct : order1.getOrderProducts()) {
+                sum += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
+            }
+            orderCosts.put(order1.getId(), sum);
+            System.out.println(order1.getOrderProducts().size());
+        }
+        model.addAttribute("orders", orders);
+        model.addAttribute("orderCosts", orderCosts);
+        return "order_page";
     }
 }

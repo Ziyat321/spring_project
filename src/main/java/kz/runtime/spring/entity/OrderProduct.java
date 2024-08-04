@@ -20,7 +20,7 @@ public class OrderProduct {
     private Product product;
 
     @Column(name = "amount")
-    private Short amount;
+    private Integer amount;
 
     public Long getId() {
         return id;
@@ -46,11 +46,11 @@ public class OrderProduct {
         this.product = product;
     }
 
-    public Short getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Short amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 }
