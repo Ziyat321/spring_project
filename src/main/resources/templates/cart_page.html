@@ -8,6 +8,10 @@
 <th:block th:each="cart:${carts}">
     <p th:text="${'Название товара: ' + cart.getProduct().name}"></p>
     <p th:text="${'Количество товара: ' + cart.getAmount()}"></p>
+    <p>
+        <label>Общая стоимость товара: </label></br>
+        <input type="text" th:value="${cart.getAmount() * cart.getProduct().getPrice()}" disabled>
+    </p>
     <div style="display: flex; flex-direction: row;">
         <form method="get" action="/products/cart/decrement">
             <input type="hidden" name="cartId" th:value="${cart.id}">

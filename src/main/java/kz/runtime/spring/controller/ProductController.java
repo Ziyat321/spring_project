@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Controller
 public class ProductController {
@@ -235,7 +236,9 @@ public class ProductController {
         List<Review> reviews = product.getReviews();
         double avgRating = 0;
         for (Review review : reviews) {
-            avgRating += review.getRating();
+            if(review.getPublished()){
+                avgRating += review.getRating();
+            }
         }
         avgRating = avgRating / reviews.size();
 
@@ -261,7 +264,7 @@ public class ProductController {
         review.setProduct(productRepository.findById(productId).orElseThrow());
         review.setRating(rating);
         review.setCommentary(commentary);
-        review.setPublished(true);
+        review.setPublished(false);
         review.setReviewDate(LocalDateTime.now());
         reviewRepository.save(review);
         return "redirect:/products";
@@ -286,7 +289,7 @@ public class ProductController {
     @GetMapping(path = "/products/cart")
     public String cart(Model model) {
         User user = userService.getCurrentUser();
-        List<Cart> carts = user.getCarts();
+        List<Cart> carts = cartRepository.findAllByUserOrderById(user);
         double sum = 0;
         for (Cart cart : carts) {
             sum += cart.getProduct().getPrice() * cart.getAmount();
@@ -358,9 +361,14 @@ public class ProductController {
             cartRepository.deleteAll(carts);
         }
 
+        return "redirect:/products/show_order";
 
+    }
+
+    @GetMapping(path = "products/show_order")
+    public String showOrder(Model model){
+        User user = userService.getCurrentUser();
         List<Order> orders = user.getOrders();
-        System.out.println(orders.size());
         Map<Long, Integer> orderCosts = new HashMap<>();
 
         for (Order order1 : orders) {
@@ -370,10 +378,19 @@ public class ProductController {
                 sum += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
             }
             orderCosts.put(order1.getId(), sum);
-            System.out.println(order1.getOrderProducts().size());
         }
         model.addAttribute("orders", orders);
         model.addAttribute("orderCosts", orderCosts);
         return "order_page";
+    }
+
+    @GetMapping(path = "/products/moderate")
+    public String moderateReviews(Model model){
+//        List<Review> reviews = user.getReviews();
+//        // Predicate<Review> filter = Review::getPublished;
+//        reviews.removeIf(Review::getPublished);
+        List<Review> reviews = reviewRepository.findAllByPublished(false);
+        model.addAttribute("reviews", reviews);
+        return "moderate_page";
     }
 }

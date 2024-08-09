@@ -50,7 +50,7 @@
 <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
 
 <div style="display: flex; flex-direction: column">
-    <div th:each="review : ${reviews}" style="display: inline-flex; flex-direction: column">
+    <div th:each="review : ${reviews}" th:if="${review.getPublished()} == true" style="display: inline-flex; flex-direction: column">
         <div th:text="${'Комментарий от пользователя ' + review.getUser().getLogin() + ':'}"
              style="margin-bottom: 10px">
         </div>

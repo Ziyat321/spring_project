@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moderating reviews</title>
+</head>
+<body>
+<div th:each="review:${reviews}">
+    <p>
+        <label>Пользователь: </label></br>
+        <input type="text" th:value="${review.getUser().getLogin()}" readonly>
+    </p>
+    <p>
+        <label>Название товара: </label></br>
+        <input type="text" th:value="${review.getProduct().getName()}" readonly>
+    </p>
+    <p>
+        <span>Отзыв к товару: </span>
+        <div th:text="${review.getCommentary()}"></div>
+    </p>
+    <div style="border:black 1px solid; margin-bottom: 5px"></div>
+</div>
+</body>
+</html>
