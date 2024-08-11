@@ -16,9 +16,24 @@
     </p>
     <p>
         <span>Отзыв к товару: </span>
-        <div th:text="${review.getCommentary()}"></div>
+    <div th:text="${review.getCommentary()}"></div>
     </p>
-    <div style="border:black 1px solid; margin-bottom: 5px"></div>
+    <div style="display: flex; flex-direction: row;">
+        <form method="get" action="/products/moderate/review_add">
+            <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
+                Добавить
+            </button>
+        </form>
+        <form method="get" action="/products/moderate/review_delete">
+            <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
+                Удалить
+            </button>
+        </form>
+    </div>
+    <div style="border:black 1px solid; margin-bottom: 5px; margin-top: 5px"></div>
 </div>
+<a href="/products">
+    <button>Main page</button>
+</a>
 </body>
 </html>

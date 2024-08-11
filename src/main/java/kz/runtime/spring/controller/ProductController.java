@@ -393,4 +393,19 @@ public class ProductController {
         model.addAttribute("reviews", reviews);
         return "moderate_page";
     }
+
+    @GetMapping(path = "/products/moderate/review_add")
+    public String addReview(@RequestParam(name = "reviewId", required = true) Long reviewId){
+        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        review.setPublished(true);
+        reviewRepository.save(review);
+        return "redirect:/products/moderate";
+    }
+
+    @GetMapping(path = "/products/moderate/review_delete")
+    public String deleteReview(@RequestParam(name = "reviewId", required = true) Long reviewId){
+        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        reviewRepository.delete(review);
+        return "redirect:/products/moderate";
+    }
 }
