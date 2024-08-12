@@ -5,33 +5,68 @@
     <title>Moderating reviews</title>
 </head>
 <body>
-<div th:each="review:${reviews}">
+<div th:each="user: ${users}">
     <p>
         <label>Пользователь: </label></br>
-        <input type="text" th:value="${review.getUser().getLogin()}" readonly>
+        <input type="text" th:value="${user.getLogin()}" readonly>
     </p>
-    <p>
-        <label>Название товара: </label></br>
-        <input type="text" th:value="${review.getProduct().getName()}" readonly>
-    </p>
-    <p>
-        <span>Отзыв к товару: </span>
-    <div th:text="${review.getCommentary()}"></div>
-    </p>
-    <div style="display: flex; flex-direction: row;">
-        <form method="get" action="/products/moderate/review_add">
-            <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
-                Добавить
-            </button>
-        </form>
-        <form method="get" action="/products/moderate/review_delete">
-            <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
-                Удалить
-            </button>
-        </form>
+
+    <p th:if="${reviews.size() > 0}" style="color: blue;">Комментарии пользователя: </p>
+    <div th:each="review:${reviews}" th:if="${review.getUser() == user}">
+        <p>
+            <label>Название товара: </label></br>
+            <input type="text" th:value="${review.getProduct().getName()}" readonly>
+        </p>
+        <p>
+            <span>Отзыв к товару: </span>
+        <div th:text="${review.getCommentary()}" style="border: black 1px solid;
+                  padding: 5px; width: 100px; border-radius: 5px;"></div>
+        </p>
+        <div style="display: flex; flex-direction: row;">
+            <form method="get" action="/products/moderate/review_add">
+                <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
+                    Добавить
+                </button>
+            </form>
+            <form method="get" action="/products/moderate/review_delete">
+                <button type="submit" style="margin-right: 5px" name="reviewId" th:value="${review.getId()}">
+                    Удалить
+                </button>
+            </form>
+        </div>
     </div>
+
+    <p th:if="${orders.size() > 0}" style="color: blue;">Заказы пользователя: </p>
+    <div th:each="order: ${orders}" th:if="${order.getUser() == user}">
+        <p th:text="${'Номер заказа: ' + order.getId()}"></p>
+        <form>
+            <div style="display: flex;">
+                <div style="margin-right: 5px;">Статус заказа:</div>
+                <select>
+                    <option th:text="${order.getStatus()}"></option>
+                    <option th:each="status: ${statuses}" th:if="${status != order.getStatus()}"
+                            th:text="${status}"></option>
+                </select>
+                <button style="height: 18px" type="submit">Сохранить</button>
+            </div>
+        </form>
+        <p th:text="${'Дата заказа: ' + order.getOrderDate()}"></p>
+
+        <th:block th:each="product:${order.getOrderProducts()}">
+            <br/>
+            <p th:text="${'Название товара: ' + product.getProduct().name}"></p>
+            <p th:text="${'Количество товара: ' + product.getAmount()}"></p>
+        </th:block>
+        <br/>
+
+
+        <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
+    </div>
+
     <div style="border:black 1px solid; margin-bottom: 5px; margin-top: 5px"></div>
+
 </div>
+
 <a href="/products">
     <button>Main page</button>
 </a>

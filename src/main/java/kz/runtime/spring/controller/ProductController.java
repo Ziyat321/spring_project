@@ -3,6 +3,7 @@ package kz.runtime.spring.controller;
 import kz.runtime.spring.entity.*;
 import kz.runtime.spring.repository.*;
 import kz.runtime.spring.service.UserService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,8 @@ public class ProductController {
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping(path = "/products")
     public String allProducts(Model model,
@@ -389,8 +392,14 @@ public class ProductController {
 //        List<Review> reviews = user.getReviews();
 //        // Predicate<Review> filter = Review::getPublished;
 //        reviews.removeIf(Review::getPublished);
+        List<User> users = userRepository.findAll();
         List<Review> reviews = reviewRepository.findAllByPublished(false);
+        List<Order> orders = orderRepository.findAll();
+        Status[] statuses = Status.values();
+        model.addAttribute("users", users);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("orders", orders);
+        model.addAttribute("statuses", statuses);
         return "moderate_page";
     }
 
