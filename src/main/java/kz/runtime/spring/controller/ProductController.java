@@ -417,4 +417,27 @@ public class ProductController {
         reviewRepository.delete(review);
         return "redirect:/products/moderate";
     }
+
+    @GetMapping(path = "/products/change_status")
+    public String changeStatus(@RequestParam(name = "status", required = true) Status status,
+                                @RequestParam(name = "orderId", required = true) Long orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        order.setStatus(status);
+        orderRepository.save(order);
+        return "redirect:/products/moderate";
+    }
+
+    @GetMapping(path = "/products/status_filter")
+    public String statusFilter(@RequestParam(name = "status", required = true) Status status,
+                               Model model){
+        List<User> users = userRepository.findAll();
+        List<Review> reviews = reviewRepository.findAllByPublished(false);
+        List<Order> orders = orderRepository.findAllByStatus(status);
+        Status[] statuses = Status.values();
+        model.addAttribute("users", users);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("orders", orders);
+        model.addAttribute("statuses", statuses);
+        return "moderate_page";
+    }
 }

@@ -5,6 +5,17 @@
     <title>Moderating reviews</title>
 </head>
 <body>
+<div style="display: flex;">
+    <form method="get" action="/products/status_filter">
+        <select name="status">
+            <option th:each="status:${statuses}" th:text="${status}" th:value="${status}"></option>
+        </select>
+        <button type="submit">Отсортировать</button>
+    </form>
+    <a href="/products/moderate">
+        <button style="margin-left: 3px;">Сбросить</button>
+    </a>
+</div>
 <div th:each="user: ${users}">
     <p>
         <label>Пользователь: </label></br>
@@ -39,15 +50,17 @@
     <p th:if="${orders.size() > 0}" style="color: blue;">Заказы пользователя: </p>
     <div th:each="order: ${orders}" th:if="${order.getUser() == user}">
         <p th:text="${'Номер заказа: ' + order.getId()}"></p>
-        <form>
+        <form method="get" action="/products/change_status">
             <div style="display: flex;">
                 <div style="margin-right: 5px;">Статус заказа:</div>
-                <select>
-                    <option th:text="${order.getStatus()}"></option>
+                <select name="status">
+                    <option th:value="${order.getStatus()}" th:text="${order.getStatus()}"></option>
                     <option th:each="status: ${statuses}" th:if="${status != order.getStatus()}"
-                            th:text="${status}"></option>
+                            th:value="${status}" th:text="${status}"></option>
                 </select>
-                <button style="height: 18px" type="submit">Сохранить</button>
+                <button style="height: 19px; margin-left: 3px;" type="submit" name="orderId"
+                        th:value="${order.getId()}">Сохранить
+                </button>
             </div>
         </form>
         <p th:text="${'Дата заказа: ' + order.getOrderDate()}"></p>
