@@ -1,5 +1,6 @@
 package kz.runtime.spring.controller;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import kz.runtime.spring.entity.*;
 import kz.runtime.spring.repository.*;
 import kz.runtime.spring.service.UserService;
@@ -439,5 +440,28 @@ public class ProductController {
         model.addAttribute("orders", orders);
         model.addAttribute("statuses", statuses);
         return "moderate_page";
+    }
+
+    @GetMapping(path = "/products/orders")
+    public String showOrders(Model model){
+        User user = userService.getCurrentUser();
+        List<Order> orders = user.getOrders();
+        Map<Long, Integer> orderCostMap = new HashMap<>();
+        int cost = 0;
+        int productCost = 0;
+        int orderCost = 0;
+        for (Order order : orders) {
+            for (OrderProduct orderProduct : order.getOrderProducts()) {
+                productCost = orderProduct.getProduct().getPrice() * orderProduct.getAmount();
+                orderCost += productCost;
+                cost += orderCost;
+            }
+            orderCostMap.put(order.getId(), orderCost);
+            orderCost = 0;
+        }
+        model.addAttribute("orders", orders);
+        model.addAttribute("orderCosts", orderCostMap);
+        model.addAttribute("cost", cost);
+        return "user_orders";
     }
 }

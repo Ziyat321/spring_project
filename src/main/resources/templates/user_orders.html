@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders list</title>
+</head>
+<body>
+<div th:each="order: ${orders}">
+    <p th:text="${'Номер заказа: ' + order.getId()}"></p>
+    <p th:text="${'Дата заказа: ' + order.getOrderDate()}"></p>
+    <div th:each="product: ${order.getOrderProducts()}">
+        <p>
+            <span th:text="'Название товара: '" style="color: blue"></span>
+            <span th:text="${product.getProduct().getName()}"></span>
+        </p>
+        <p th:text="'Количество товара: ' + ${product.getAmount()}"></p>
+        <p th:text="'Общая стоимость товара: ' + ${product.getAmount() * product.getProduct().getPrice()}"></p>
+    </div>
+    <p>
+        <span th:text="'Общая стоимость товаров: '" style="color: red"></span>
+        <span th:text="${orderCosts.get(order.getId())}"></span>
+    </p>
+
+    <div style="border: 1px solid black;"></div>
+</div>
+<p th:text="${'Общая стоимость заказов: ' + cost}"></p>
+
+<form method="get" action="/products">
+    <button>Main page</button>
+</form>
+</body>
+</html>
