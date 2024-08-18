@@ -198,37 +198,33 @@ public class ProductController {
     public String saveChangedCharacteristics(
             Model model,
             @RequestParam(name = "productId", required = false) Long productId,
-            @RequestParam(name = "description", required = false) String... description
+            @RequestParam(name = "description", required = false) List<String> description,
+            @RequestParam(name = "characteristicId", required = false) List<Long> characteristicIds
     ) {
         Product product = productRepository.findById(productId).orElseThrow();
         List<CharacteristicDescription> characteristicDescriptions = product.getCharacteristicDescriptions();
-        for (int i = 0; i < description.length; i++) {
-            if (description[i] != null && !description[i].isEmpty()) {
-                boolean exists = false;
-                CharacteristicDescription characteristicDescription = new CharacteristicDescription();
-                if (!characteristicDescriptions.isEmpty()) {
-                    for (CharacteristicDescription characteristicDescription1 : characteristicDescriptions) {
-                        if (characteristicDescription1.getCharacteristic().getName().equals(
-                                product.getCategory().getCharacteristics().get(i).getName()
-                        )) {
-                            exists = true;
-                            characteristicDescription = characteristicDescription1;
-                            break;
-                        }
-                    }
-                }
-                if (!exists) {
-                    characteristicDescription.setDescription(description[i]);
-                    characteristicDescription.setProduct(product);
-                    characteristicDescription.setCharacteristic(product.getCategory().getCharacteristics().get(i));
-                    characteristicDescriptionRepository.save(characteristicDescription);
-                } else {
-                    characteristicDescription.setDescription(description[i]);
-                    characteristicDescriptionRepository.save(characteristicDescription);
-                }
 
+        for (int i = 0; i < characteristicIds.size(); i++) {
+            boolean exists = false;
+
+            for (CharacteristicDescription productCharacteristic : characteristicDescriptions) {
+                if (productCharacteristic.getCharacteristic().getId().equals(characteristicIds.get(i)) &&
+                        !description.get(i).isEmpty()) {
+                    exists = true;
+                    productCharacteristic.setDescription(description.get(i));
+                    characteristicDescriptionRepository.save(productCharacteristic);
+                }
+            }
+
+            if (!exists && !description.get(i).isEmpty()) {
+                CharacteristicDescription productCharacteristic = new CharacteristicDescription();
+                productCharacteristic.setProduct(product);
+                productCharacteristic.setCharacteristic(characteristicRepository.findById(characteristicIds.get(i)).orElseThrow());
+                productCharacteristic.setDescription(description.get(i));
+                characteristicDescriptionRepository.save(productCharacteristic);
             }
         }
+
         return "redirect:/products";
     }
 
@@ -239,21 +235,29 @@ public class ProductController {
         User user = userService.getCurrentUser();
         List<Review> reviews = product.getReviews();
         double avgRating = 0;
-        for (Review review : reviews) {
-            if(review.getPublished()){
-                avgRating += review.getRating();
+
+        if (!reviews.isEmpty()) {
+            for (Review review : reviews) {
+                if (review.getPublished()) {
+                    avgRating += review.getRating();
+                }
             }
+            avgRating = avgRating / reviews.size();
+        } else {
+            avgRating = -1;
         }
-        avgRating = avgRating / reviews.size();
 
         boolean userWroteReview;
         Review review = reviewRepository.findByUserAndProduct(user, product).orElse(null);
         userWroteReview = review != null;
 
+        List<CharacteristicDescription> characteristics = product.getCharacteristicDescriptions();
+
         model.addAttribute("product", product);
         model.addAttribute("reviews", reviews);
         model.addAttribute("avgRating", avgRating);
         model.addAttribute("addingReviewAvailable", !userWroteReview);
+        model.addAttribute("characteristics", characteristics);
         return "product_view";
     }
 
@@ -305,8 +309,8 @@ public class ProductController {
 
 
     @GetMapping(path = "products/cart/decrement")
-    public String decrementAmountInCart(@RequestParam(name="decrement", required = true)Integer decrement,
-                                        @RequestParam(name = "cartId", required = true) Long cartId){
+    public String decrementAmountInCart(@RequestParam(name = "decrement", required = true) Integer decrement,
+                                        @RequestParam(name = "cartId", required = true) Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow();
         if (cart.getAmount() > 0) {
             cart.setAmount(cart.getAmount() - 1);
@@ -315,9 +319,9 @@ public class ProductController {
         return "redirect:/products/cart";
     }
 
-    @GetMapping(path="/products/cart/increment")
-    public String incrementAmountInCart(@RequestParam(name="increment", required = true)Integer increment,
-                                        @RequestParam(name = "cartId", required = true) Long cartId){
+    @GetMapping(path = "/products/cart/increment")
+    public String incrementAmountInCart(@RequestParam(name = "increment", required = true) Integer increment,
+                                        @RequestParam(name = "cartId", required = true) Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow();
         cart.setAmount(cart.getAmount() + 1);
         cartRepository.save(cart);
@@ -325,19 +329,19 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/cart/delete")
-    public String deleteProductInCart(@RequestParam(name="delete", required = true)Integer delete,
-                                      @RequestParam(name = "cartId", required = true) Long cartId){
+    public String deleteProductInCart(@RequestParam(name = "delete", required = true) Integer delete,
+                                      @RequestParam(name = "cartId", required = true) Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow();
         cartRepository.delete(cart);
         return "redirect:/products/cart";
     }
 
     @GetMapping(path = "/products/update_cart")
-    public String updateCart(){
+    public String updateCart() {
         User user = userService.getCurrentUser();
         List<Cart> carts = user.getCarts();
         for (Cart cart : carts) {
-            if(cart.getAmount() == 0){
+            if (cart.getAmount() == 0) {
                 cartRepository.delete(cart);
             }
         }
@@ -370,7 +374,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "products/show_order")
-    public String showOrder(Model model){
+    public String showOrder(Model model) {
         User user = userService.getCurrentUser();
         List<Order> orders = user.getOrders();
         Map<Long, Integer> orderCosts = new HashMap<>();
@@ -389,7 +393,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/moderate")
-    public String moderateReviews(Model model){
+    public String moderateReviews(Model model) {
 //        List<Review> reviews = user.getReviews();
 //        // Predicate<Review> filter = Review::getPublished;
 //        reviews.removeIf(Review::getPublished);
@@ -405,7 +409,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/moderate/review_add")
-    public String addReview(@RequestParam(name = "reviewId", required = true) Long reviewId){
+    public String addReview(@RequestParam(name = "reviewId", required = true) Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         review.setPublished(true);
         reviewRepository.save(review);
@@ -413,7 +417,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/moderate/review_delete")
-    public String deleteReview(@RequestParam(name = "reviewId", required = true) Long reviewId){
+    public String deleteReview(@RequestParam(name = "reviewId", required = true) Long reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         reviewRepository.delete(review);
         return "redirect:/products/moderate";
@@ -421,7 +425,7 @@ public class ProductController {
 
     @GetMapping(path = "/products/change_status")
     public String changeStatus(@RequestParam(name = "status", required = true) Status status,
-                                @RequestParam(name = "orderId", required = true) Long orderId){
+                               @RequestParam(name = "orderId", required = true) Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow();
         order.setStatus(status);
         orderRepository.save(order);
@@ -430,7 +434,7 @@ public class ProductController {
 
     @GetMapping(path = "/products/status_filter")
     public String statusFilter(@RequestParam(name = "status", required = true) Status status,
-                               Model model){
+                               Model model) {
         List<User> users = userRepository.findAll();
         List<Review> reviews = reviewRepository.findAllByPublished(false);
         List<Order> orders = orderRepository.findAllByStatus(status);
@@ -443,7 +447,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/orders")
-    public String showOrders(Model model){
+    public String showOrders(Model model) {
         User user = userService.getCurrentUser();
         List<Order> orders = user.getOrders();
         Map<Long, Integer> orderCostMap = new HashMap<>();

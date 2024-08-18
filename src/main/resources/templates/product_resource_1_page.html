@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+<link rel="stylesheet" type="text/css" href="/css/product_resource_1_page.css"/>
 <head>
     <meta charset="UTF-8">
     <title>ProductController.firstResource</title>
 </head>
 <body>
-<div style="display: flex; flex-direction: row; margin-bottom: 20px;">
-    <a href="/category_choice">
-        <button>Создать товар</button>
-    </a>
-    <a href="/products/cart">
-        <button style="margin-left: 10px">Корзина</button>
-    </a>
-    <a href="/products/orders">
-        <button style="margin-left: 10px">Заказы</button>
-    </a>
-    <a href="/products/moderate">
-        <button style="margin-left: 10px">Модерация</button>
-    </a>
+<div class="head_stripe">
+    <div>
+        <a href="/category_choice">
+            <button class="head_button">Создать товар</button>
+        </a>
+        <a href="/products/cart">
+            <button class="head_button">Корзина</button>
+        </a>
+        <a href="/products/orders">
+            <button class="head_button">Заказы</button>
+        </a>
+        <a href="/products/moderate">
+            <button class="head_button">Модерация</button>
+        </a>
+    </div>
 </div>
 
-<div th:each="product : ${products}" style="margin-bottom: 20px">
-    <div style="margin-bottom: 5px" th:text="${product.getName()}"></div>
-    <div style="display: flex; flex-direction: row">
-        <form method="get" action="/products/change">
-            <button type="submit" name="productId" th:value="${product.getId()}"
-                    style="margin-right: 5px">Edit
-            </button>
-        </form>
-        <form method="get" action="/view_product">
-            <button type="submit" name="productId" th:value="${product.getId()}"
-                    style="margin-right: 5px">View
-            </button>
-        </form>
-        <form method="get" action="/products/add_to_cart">
-            <button type="submit" name="productId" th:value="${product.getId()}"
-                    style="margin-right: 5px">Add to Cart
-            </button>
-        </form>
+<div class="products_container">
+    <div th:each="product : ${products}" class="product_block">
+        <div th:text="${product.getName()}" class="product_name"></div>
+        <div class="buttons_container">
+            <form method="get" action="/products/change">
+                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                    Edit
+                </button>
+            </form>
+            <form method="get" action="/view_product">
+                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                    View
+                </button>
+            </form>
+            <form method="get" action="/products/add_to_cart">
+                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                    Add to Cart
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 </body>

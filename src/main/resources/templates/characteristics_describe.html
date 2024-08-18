@@ -27,6 +27,7 @@
         <th:block th:each="ob : ${map.keySet()}">
             <label th:text="${ob.getName()}"></label><br/>
             <input type="text" name="description" th:placeholder="${map.get(ob).getDescription()}"><br/><br/>
+            <input type="hidden" name="characteristicId" th:value="${ob.getId()}"/>
         </th:block>
     </p>
 

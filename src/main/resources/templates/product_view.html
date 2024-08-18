@@ -1,70 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+<link rel="stylesheet" type="text/css" href="/css/product_view.css"/>
+
 <head>
     <meta charset="UTF-8">
-    <title>Product Info</title>
+    <title>Product View</title>
 </head>
 <body>
-<p>
-    <label>Категория: </label></br>
-    <input type="text" th:value="${product.category.getName()}" readonly>
-</p>
-<p>
-    <label>Название товара: </label></br>
-    <input type="text" th:value="${product.getName()}" readonly>
-</p>
-<p>
-    <label>Цена товара: </label></br>
-    <input type="text" th:value="${product.getPrice()}" readonly>
-</p>
-<p th:each="characteristicDescription : ${product.getCharacteristicDescriptions()}">
-    <label th:text="${characteristicDescription.getCharacteristic().getName()}"></label></br>
-    <input type="text" th:value="${characteristicDescription.getDescription()}" readonly>
-</p>
 
-<div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
-<p style="margin-bottom: 10px">
-    <label>Средний рейтинг товара: </label></br>
-    <input type="text" th:value="${avgRating}" readonly>
-</p>
-<div style="border-bottom: solid 1px black; margin-bottom: 2px"></div>
+<div class="container">
 
-<form method="post" action="/save_commentary" th:if="${addingReviewAvailable} == true">
-    <div>
-        <input type="hidden" name="productId" th:value="${product.getId()}">
-        <select name="rating">
-            <option selected disabled>Оцените товар</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-        </select></br>
-        <input type="text" th:name="commentary" placeholder="Оставьте комментарий..." style="margin-top: 4px">
-        <input type="submit" value="Отправить">
-    </div>
-</form>
-<p th:if="${addingReviewAvailable} == false">
-    Данный пользователь уже оставлял комментарий.
-</p>
-<div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
+    <!--Описание товара-->
+    <div class="product_container">
 
-<div style="display: flex; flex-direction: column">
-    <div th:each="review : ${reviews}" th:if="${review.getPublished()} == true" style="display: inline-flex; flex-direction: column">
-        <div th:text="${'Комментарий от пользователя ' + review.getUser().getLogin() + ':'}"
-             style="margin-bottom: 10px">
+        <div class="characteristics_block">
+            <div class="product_name" th:text="${product.getName()}"></div>
+            <div th:if="${avgRating > -1}" class="rating" th:text="${'Рейтинг: ' + avgRating}"></div>
+            <div th:if="${avgRating == -1}" class="rating" th:text="${'Рейтинг: -'}"></div>
+
+            <div class="characteristics">
+                <div class="char_row">
+                    <div class="char_parameter">Категория</div>
+                    <div class="char_value" th:text="${product.getCategory().getName()}"></div>
+                </div>
+                <th:block th:each="characteristic : ${characteristics}">
+                    <div class="char_row">
+                        <div class="char_parameter" th:text="${characteristic.getCharacteristic().getName()}"></div>
+                        <div class="char_value" th:text="${characteristic.getDescription()}"></div>
+                    </div>
+                </th:block>
+            </div>
         </div>
-        <div th:text="${review.getCommentary()}"
-             style="width: 250px; border: solid 1px black; border-radius: 5px; padding: 5px 5px 5px 5px;
-         margin-bottom: 2px">
+
+        <div class="price_block">
+            <div class="price" th:text="${product.getPrice() + ' тг.'}"></div>
+            <form method="get" action="/products/add_to_cart">
+                <button class="cart_button" type="submit" name="productId" th:value="${product.getId()}">
+                    Add to Cart
+                </button>
+            </form>
         </div>
-        <label>Рейтинг товара: </label>
-        <input type="text" th:value="${review.getRating()}" readonly style="width: 250px">
-        <div th:text="${review.getReviewDate()}" style="display:flex; flex-direction: row-reverse;
-        padding: 5px 5px 0 0; margin-bottom: 2px; width: 250px"></div>
-        <div style="border-bottom: solid 1px black; margin-bottom: 2px; margin-top: 5px"></div>
     </div>
+    <form method="get" action="/products">
+        <button class="main_page_button">Main page</button>
+    </form>
+
+    <!--Оставить отзыв и рейтинг-->
+    <div class="review_container">
+        <th:block th:if="${addingReviewAvailable} == true">
+            <form class="review_block" method="post" action="/products/saveCommentary">
+                <input type="hidden" name="productId" th:value="${product.getId()}">
+                <select class="rating_select" name="rating">
+                    <option disabled selected>Choose rating</option>
+                    <option th:each="i : ${#numbers.sequence(1,5)}"
+                            th:value="${i}"
+                            th:text="${i}">
+                </select>
+                <textarea class="rating_text" type="text" name="commentary" placeholder="Leave a commentary"></textarea>
+                <button class="save_button" type="submit">Save</button>
+            </form>
+        </th:block>
+
+        <th:block th:if="${addingReviewAvailable} == false">
+            <p class="not_available_text">Вы уже оставили отзыв к этому товару. Повторная оценка невозможна.</p>
+        </th:block>
+    </div>
+
+
+    <!--Отзывы-->
+    <div class="reviews_container">
+        <div th:if="${reviews.size() > 0}" class="comment_block">
+            <th:block th:each="review : ${reviews}">
+                <div class="comment_info">
+                    <div th:text="${review.getUser().getLogin()}"></div>
+                    <div th:text="${review.getReviewDate()}"></div>
+                </div>
+                <div class="comment_text">
+                    <div th:text="${'Рейтинг: ' + review.getRating()}"></div>
+                    <div th:text="${review.getCommentary()}"></div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
 </div>
-
 </body>
 </html>
