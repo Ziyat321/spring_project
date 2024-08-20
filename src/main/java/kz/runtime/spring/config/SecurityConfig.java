@@ -13,8 +13,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests(authorizationConfigurer -> {
-           authorizationConfigurer.requestMatchers("/category_choice").authenticated();
-           authorizationConfigurer.requestMatchers("/category_choice").hasRole("USER");
+//           authorizationConfigurer.requestMatchers("/category_choice").authenticated();
+//           authorizationConfigurer.requestMatchers("/category_choice").hasRole("USER");
+            authorizationConfigurer.requestMatchers("/category_choice").hasRole("ADMIN"); // создать товар
+            authorizationConfigurer.requestMatchers("/create_product").hasRole("ADMIN"); // создать товар
+            authorizationConfigurer.requestMatchers("/products/cart").hasRole("USER"); // корзина
+            authorizationConfigurer.requestMatchers("/products/show_order").hasRole("USER"); // содержимое заказа
+            authorizationConfigurer.requestMatchers("/products/change").hasRole("ADMIN"); // редактировать товар
+            authorizationConfigurer.requestMatchers("/products/add_to_cart").hasRole("USER"); // добавить в корзину
+
            authorizationConfigurer.anyRequest().permitAll();
         });
 
