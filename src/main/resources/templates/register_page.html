@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<form method="post" action="/create_user">
+    <p th:if="${user_exists == true}">
+        Пользователь с данным логином уже существует.
+    </p>
+    <p>
+        <label>Введите имя:</label><br/>
+        <input type="text" name="first_name">
+    </p>
+    <p>
+        <label>Введите фамилию:</label><br/>
+        <input type="text" name="last_name">
+    </p>
+    <p>
+        <label>Введите логин:</label><br/>
+        <input type="text" name="login">
+    </p>
+    <p>
+        <label>Введите пароль:</label><br/>
+        <input type="password" name="password">
+    </p>
+    <p>
+        <button type="submit">Зарегестрироваться</button>
+    </p>
+</form>
+</body>
+</html>

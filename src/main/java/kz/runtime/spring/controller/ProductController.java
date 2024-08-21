@@ -468,4 +468,34 @@ public class ProductController {
         model.addAttribute("cost", cost);
         return "user_orders";
     }
+
+    @GetMapping(path = "/user_register")
+    public String userRegister(@RequestParam(name = "user_exists", required = true) Boolean user_exists) {
+        return "register_page";
+    }
+
+    @PostMapping(path = "/create_user")
+    public String createUser(@RequestParam(name = "first_name", required = true) String first_name,
+                             @RequestParam(name = "last_name", required = true) String last_name,
+                             @RequestParam(name = "login", required = true) String login,
+                             @RequestParam(name = "password", required = true) String password,
+                             Model model) {
+            try{
+                User user = userRepository.findUserByLogin(login).orElseThrow();
+                Boolean user_exists = true;
+                model.addAttribute("user_exists", user_exists);
+                return "register_page";
+            }catch (Exception e){
+                User user = new User();
+                user.setRole(Role.USER);
+                user.setLogin(login);
+                user.setPassword(password);
+                user.setFirstName(first_name);
+                user.setLastName(last_name);
+                user.setSignUpDate(LocalDateTime.now());
+                userRepository.save(user);
+                return "registered";
+            }
+    }
+
 }

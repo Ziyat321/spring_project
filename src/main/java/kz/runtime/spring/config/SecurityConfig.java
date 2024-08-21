@@ -3,6 +3,7 @@ package kz.runtime.spring.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -12,6 +13,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+
         httpSecurity.authorizeHttpRequests(authorizationConfigurer -> {
 //           authorizationConfigurer.requestMatchers("/category_choice").authenticated();
 //           authorizationConfigurer.requestMatchers("/category_choice").hasRole("USER");
@@ -23,6 +26,10 @@ public class SecurityConfig {
             authorizationConfigurer.requestMatchers("/products/add_to_cart").hasRole("USER"); // добавить в корзину
 
            authorizationConfigurer.anyRequest().permitAll();
+        });
+
+        httpSecurity.formLogin(formLoginConfigurer -> {
+            formLoginConfigurer.defaultSuccessUrl("/products");
         });
 
         httpSecurity.formLogin(formLoginConfigurer ->{
