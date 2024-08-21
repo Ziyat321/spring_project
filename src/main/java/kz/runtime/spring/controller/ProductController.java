@@ -45,6 +45,8 @@ public class ProductController {
     @GetMapping(path = "/products")
     public String allProducts(Model model,
                               @RequestParam(name = "categoryId", required = false) Long category) {
+        User user = userService.getCurrentUser();
+        boolean userEntered = user != null;
         if (category != null) {
             Category category1 = categoryRepository.findById(category).orElseThrow();
             List<Product> products = category1.getProducts();
@@ -53,6 +55,11 @@ public class ProductController {
             List<Product> products = productRepository.findAll();
             model.addAttribute("products", products);
         }
+
+        if (userEntered) {
+            model.addAttribute("user", user);
+        }
+        model.addAttribute("user_entered", userEntered);
         return "product_resource_1_page";
     }
 

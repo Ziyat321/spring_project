@@ -7,7 +7,7 @@
     font-family: Arial;
 }
 
-.head_stripe{
+.head_stripe {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -17,10 +17,10 @@
     padding: 0 20px 0 20px;
 }
 
-.head_button{
+.head_button {
     height: 25px;
     background-color: #2f5d28;
-    color:white;
+    color: white;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
@@ -29,9 +29,55 @@
     font-size: 16px;
 }
 
-.head_button:hover{
+.head_button:hover {
     background-color: white;
     color: #2f5d28;
+}
+
+.true {
+    position: relative;
+}
+
+.false {
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+}
+
+.signed_button {
+    height: 29px;
+    background-color: white;
+    color: #2f5d28;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 5px;
+    /*border: none;*/
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    border: solid 2px #2f5d28;
+}
+
+.top {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom: none;
+}
+
+.bottom {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top: none;
+}
+
+.true:hover .false{
+    visibility: visible;
+}
+
+.bottom:hover{
+    background-color: #2f5d28;
+    color: white;
 }
 
 .products_container {
@@ -57,7 +103,7 @@
 .product_name {
     font-weight: bold;
     font-size: 18px;
-    color:#2f5d28;
+    color: #2f5d28;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -78,7 +124,7 @@
     padding: 0 12px 0 12px;
 }
 
-.product_button:hover{
+.product_button:hover {
     background-color: #7bb972;
     color: white;
 }
