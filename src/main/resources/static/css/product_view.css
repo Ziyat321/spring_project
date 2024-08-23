@@ -99,6 +99,17 @@ body {
     flex-direction: column;
 }
 
+.sign_in_button{
+    margin-top: 5px;
+    border: none;
+    background-color: #afd5ab;
+    border-radius: 5px;
+    padding: 6px;
+    color: #2f5d28;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .review_block {
     display: inline-flex;
     flex-direction: column;
@@ -138,6 +149,7 @@ body {
     padding: 6px;
     color: #2f5d28;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .not_available_text {
@@ -174,6 +186,26 @@ body {
 
 .comment_text > div:nth-child(1) {
     margin-bottom: 10px;
+}
+
+.buttons_block{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.buttons_block button{
+    margin-top: 5px;
+    border: none;
+    background-color: #afd5ab;
+    border-radius: 5px;
+    padding: 6px;
+    color: #2f5d28;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete_button{
+    margin-left: 5px;
 }
 
 .main_page_button {

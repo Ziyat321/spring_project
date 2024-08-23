@@ -257,6 +257,11 @@ public class ProductController {
         boolean userWroteReview;
         Review review = reviewRepository.findByUserAndProduct(user, product).orElse(null);
         userWroteReview = review != null;
+        boolean authorized = user != null;
+        boolean isAdmin = false;
+        if(user != null){
+            isAdmin = user.getRole().equals(Role.ADMIN);
+        }
 
         List<CharacteristicDescription> characteristics = product.getCharacteristicDescriptions();
 
@@ -264,8 +269,20 @@ public class ProductController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("avgRating", avgRating);
         model.addAttribute("addingReviewAvailable", !userWroteReview);
+        model.addAttribute("authorized", authorized);
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("characteristics", characteristics);
         return "product_view";
+    }
+
+    @GetMapping(path = "/review/hide")
+    public String hideReview(@RequestParam(name = "reviewId", required = true) Long reviewId,
+                             @RequestParam(name = "productId", required = true) Long productId,
+                             Model model){
+        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        review.setPublished(false);
+        reviewRepository.save(review);
+        return "redirect:/view_product?productId=" + productId;
     }
 
     @PostMapping(path = "/save_commentary")

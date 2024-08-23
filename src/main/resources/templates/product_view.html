@@ -46,8 +46,15 @@
     </form>
 
     <!--Оставить отзыв и рейтинг-->
+    <div th:if="${authorized == false}" class="review_container">
+        <p class="not_available_text">Войдите чтобы оставить отзыв</p>
+        <a href="/login">
+            <button class="sign_in_button">Sign in</button>
+        </a>
+    </div>
+
     <div class="review_container">
-        <th:block th:if="${addingReviewAvailable} == true">
+        <th:block th:if="${addingReviewAvailable == true && authorized == true}">
             <form class="review_block" method="post" action="/products/saveCommentary">
                 <input type="hidden" name="productId" th:value="${product.getId()}">
                 <select class="rating_select" name="rating">
@@ -78,6 +85,15 @@
                 <div class="comment_text">
                     <div th:text="${'Рейтинг: ' + review.getRating()}"></div>
                     <div th:text="${review.getCommentary()}"></div>
+                </div>
+                <div class="buttons_block" th:if="${isAdmin == true}">
+                    <form method="get" action="/review/hide">
+                        <input type="hidden" name="productId" th:value="${product.getId()}">
+                        <button name="reviewId" th:value="${review.getId()}">Скрыть</button>
+                    </form>
+                    <form>
+                        <button class="delete_button">Удалить</button>
+                    </form>
                 </div>
             </th:block>
         </div>

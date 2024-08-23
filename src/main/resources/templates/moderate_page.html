@@ -16,7 +16,7 @@
         <button style="margin-left: 3px;">Сбросить</button>
     </a>
 </div>
-<div th:each="user: ${users}">
+<div th:each="user: ${users}" th:if="${user.getReviews() != null || user.getOrders() != null}">
     <p>
         <label>Пользователь: </label></br>
         <input type="text" th:value="${user.getLogin()}" readonly>

@@ -31,6 +31,13 @@ values (1, 8, '96'),
 insert into "user" (role, login, password, first_name, last_name, sign_up_date)
 values (1, 'user984', 'greatest_programmer', 'John', 'Norton', '2024-07-29 12:53:00');
 
+insert into "user" (role, login, password, first_name, last_name, sign_up_date)
+values (2, 'admin', 'admin', 'Rick', 'James', '2024-08-23 12:20:00');
+
+update "user"
+set role=0
+where id=6;
+
 insert into review (user_id, product_id, published, rating, commentary, review_date)
 values (1, 8, true, 4, 'Ryzen Threadripper PRO 7995WX is 42.4x faster than Core i5-7300U. It can run Fortnite at ' ||
                        'recommended settings according to Epic Games.', '2024-07-29 14:25:00');
