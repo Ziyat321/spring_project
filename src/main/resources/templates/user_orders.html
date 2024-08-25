@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+<link rel="stylesheet" href="/css/user_orders.css"/>
 <head>
     <meta charset="UTF-8">
     <title>Orders list</title>
 </head>
 <body>
-<div th:each="order: ${orders}">
-    <p th:text="${'Номер заказа: ' + order.getId()}"></p>
-    <p th:text="${'Дата заказа: ' + order.getOrderDate()}"></p>
-    <div th:each="product: ${order.getOrderProducts()}">
-        <p>
-            <span th:text="'Название товара: '" style="color: blue"></span>
-            <span th:text="${product.getProduct().getName()}"></span>
-        </p>
-        <p th:text="'Количество товара: ' + ${product.getAmount()}"></p>
-        <p th:text="'Общая стоимость товара: ' + ${product.getAmount() * product.getProduct().getPrice()}"></p>
-    </div>
-    <p>
-        <span th:text="'Общая стоимость товаров: '" style="color: red"></span>
-        <span th:text="${orderCosts.get(order.getId())}"></span>
-    </p>
 
-    <div style="border: 1px solid black;"></div>
+<div th:each="order: ${orders}" class="order_container">
+    <div class="title_block">
+        <div class="name_date_block">
+            <div th:text="${'Номер заказа: ' + order.getId()}"></div>
+            <div th:text="${order.getOrderDate()}"></div>
+        </div>
+        <div th:text="${order.getStatus()}"></div>
+    </div>
+
+    <div th:each="product: ${order.getOrderProducts()}">
+        <ul>
+           <li>
+               <div class="product_block">
+                   <div th:text="${product.getProduct().getName()}"></div>
+                   <div th:text="${product.getAmount()}"></div>
+                   <div th:text="${product.getAmount() * product.getProduct().getPrice() + ' тг.'}"></div>
+               </div>
+           </li>
+        </ul>
+    </div>
+
+    <div class="price_block" th:text="${orderCosts.get(order.getId()) + ' тг.'}"></div>
+
+
 </div>
-<p th:text="${'Общая стоимость заказов: ' + cost}"></p>
 
 <form method="get" action="/products">
-    <button>Main page</button>
+    <button class="main_page_button">Main page</button>
 </form>
 </body>
 </html>

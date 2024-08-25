@@ -111,6 +111,13 @@
     background-color: #2f5d28;
 }
 
+.empty_cart{
+    color: #2f5d28;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 20px 0 0 20px;
+}
+
 .main_page_button {
     position: fixed;
     bottom: 20px;

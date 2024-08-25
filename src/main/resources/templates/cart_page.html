@@ -6,39 +6,45 @@
     <title>Cart</title>
 </head>
 <body>
-<div class="container" th:each="cart:${carts}">
-    <div class="info_block">
-        <div class="product_name" th:text="${cart.getProduct().name}"></div>
-        <div class="product_price" th:text="${cart.getAmount() * cart.getProduct().getPrice()} + ' тг.'"></div>
-    </div>
-    <div class="buttons_block">
-        <form method="get" action="/products/cart/delete">
-            <input type="hidden" name="cartId" th:value="${cart.id}">
-            <button class="delete_button" value="1">Delete</button>
-        </form>
-        <div class="amount_button">
-            <form method="get" action="/products/cart/decrement">
+<div th:if="${isCartEmpty == false}">
+    <div class="container" th:each="cart:${carts}">
+        <div class="info_block">
+            <div class="product_name" th:text="${cart.getProduct().name}"></div>
+            <div class="product_price" th:text="${cart.getAmount() * cart.getProduct().getPrice()} + ' тг.'"></div>
+        </div>
+        <div class="buttons_block">
+            <form method="get" action="/products/cart/delete">
                 <input type="hidden" name="cartId" th:value="${cart.id}">
-                <button name="decrement" value="1">-</button>
+                <button class="delete_button">Delete</button>
             </form>
-            <span th:text="${cart.getAmount()}"></span>
-            <form method="get" action="/products/cart/increment">
-                <input type="hidden" name="cartId" th:value="${cart.id}">
-                <button name="increment" value="1">+</button>
-            </form>
+            <div class="amount_button">
+                <form method="get" action="/products/cart/decrement">
+                    <input type="hidden" name="cartId" th:value="${cart.id}">
+                    <button name="decrement" value="1">-</button>
+                </form>
+                <span th:text="${cart.getAmount()}"></span>
+                <form method="get" action="/products/cart/increment">
+                    <input type="hidden" name="cartId" th:value="${cart.id}">
+                    <button name="increment" value="1">+</button>
+                </form>
+            </div>
         </div>
     </div>
+
+    <div class="order_container">
+        <div class="stripe"></div>
+        <div class="total_price" th:text="${sum + ' тг.'}"></div>
+        <form method="get" action="/products/place_order">
+            <button class="order_button">Place the order</button>
+        </form>
+    </div>
+
 </div>
 
-<div class="order_container">
-    <div class="stripe"></div>
-    <div class="total_price" th:text="${sum + ' тг.'}"></div>
-    <form method="get" action="/products/place_order">
-        <button class="order_button">Place the order</button>
-    </form>
-</div>
+<div th:if="${isCartEmpty == true}" class="empty_cart">Корзина пуста.</div>
 
-<form method="get" action="/products">
+
+<form method="get" action="/products/update_cart">
     <button class="main_page_button">Main page</button>
 </form>
 

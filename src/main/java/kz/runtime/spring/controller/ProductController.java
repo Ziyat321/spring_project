@@ -240,7 +240,7 @@ public class ProductController {
                               @RequestParam(name = "productId", required = true) Long productId) {
         Product product = productRepository.findById(productId).orElseThrow();
         User user = userService.getCurrentUser();
-        List<Review> reviews = product.getReviews();
+        List<Review> reviews = reviewRepository.findAllByProductAndPublished(product, true);
         double avgRating = 0;
 
         if (!reviews.isEmpty()) {
@@ -326,8 +326,10 @@ public class ProductController {
         for (Cart cart : carts) {
             sum += cart.getProduct().getPrice() * cart.getAmount();
         }
+        boolean isCartEmpty = sum == 0;
         model.addAttribute("carts", carts);
         model.addAttribute("sum", sum);
+        model.addAttribute("isCartEmpty", isCartEmpty);
         return "cart_page";
     }
 
@@ -353,8 +355,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/cart/delete")
-    public String deleteProductInCart(@RequestParam(name = "delete", required = true) Integer delete,
-                                      @RequestParam(name = "cartId", required = true) Long cartId) {
+    public String deleteProductInCart(@RequestParam(name = "cartId", required = true) Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow();
         cartRepository.delete(cart);
         return "redirect:/products/cart";
@@ -393,28 +394,10 @@ public class ProductController {
             cartRepository.deleteAll(carts);
         }
 
-        return "redirect:/products/show_order";
+        return "redirect:/products/orders";
 
     }
 
-    @GetMapping(path = "products/show_order")
-    public String showOrder(Model model) {
-        User user = userService.getCurrentUser();
-        List<Order> orders = user.getOrders();
-        Map<Long, Integer> orderCosts = new HashMap<>();
-
-        for (Order order1 : orders) {
-            System.out.println(order1.getId());
-            int sum = 0;
-            for (OrderProduct orderProduct : order1.getOrderProducts()) {
-                sum += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
-            }
-            orderCosts.put(order1.getId(), sum);
-        }
-        model.addAttribute("orders", orders);
-        model.addAttribute("orderCosts", orderCosts);
-        return "order_page";
-    }
 
     @GetMapping(path = "/products/moderate")
     public String moderateReviews(Model model) {
@@ -441,10 +424,15 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/moderate/review_delete")
-    public String deleteReview(@RequestParam(name = "reviewId", required = true) Long reviewId) {
+    public String deleteReview(@RequestParam(name = "reviewId", required = true) Long reviewId,
+                               @RequestParam(name = "productId", required = false) Long productId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         reviewRepository.delete(review);
-        return "redirect:/products/moderate";
+        if(productId != null) {
+            return "redirect:/view_product?productId=" + productId;
+        } else {
+            return "redirect:/products/moderate";
+        }
     }
 
     @GetMapping(path = "/products/change_status")
@@ -475,21 +463,18 @@ public class ProductController {
         User user = userService.getCurrentUser();
         List<Order> orders = user.getOrders();
         Map<Long, Integer> orderCostMap = new HashMap<>();
-        int cost = 0;
         int productCost = 0;
         int orderCost = 0;
         for (Order order : orders) {
             for (OrderProduct orderProduct : order.getOrderProducts()) {
                 productCost = orderProduct.getProduct().getPrice() * orderProduct.getAmount();
                 orderCost += productCost;
-                cost += orderCost;
             }
             orderCostMap.put(order.getId(), orderCost);
             orderCost = 0;
         }
         model.addAttribute("orders", orders);
         model.addAttribute("orderCosts", orderCostMap);
-        model.addAttribute("cost", cost);
         return "user_orders";
     }
 

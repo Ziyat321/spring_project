@@ -32,7 +32,7 @@ insert into "user" (role, login, password, first_name, last_name, sign_up_date)
 values (1, 'user984', 'greatest_programmer', 'John', 'Norton', '2024-07-29 12:53:00');
 
 insert into "user" (role, login, password, first_name, last_name, sign_up_date)
-values (2, 'admin', 'admin', 'Rick', 'James', '2024-08-23 12:20:00');
+values (0, 'admin', 'admin', 'Rick', 'James', '2024-08-23 12:20:00');
 
 update "user"
 set role=0
