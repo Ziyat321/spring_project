@@ -7,6 +7,7 @@ import kz.runtime.spring.service.UserService;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,8 @@ public class ProductController {
     private OrderProductRepository orderProductRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping(path = "/products")
     public String allProducts(Model model,
@@ -498,7 +501,7 @@ public class ProductController {
                 User user = new User();
                 user.setRole(Role.USER);
                 user.setLogin(login);
-                user.setPassword(password);
+                user.setPassword(passwordEncoder.encode(password));
                 user.setFirstName(first_name);
                 user.setLastName(last_name);
                 user.setSignUpDate(LocalDateTime.now());
