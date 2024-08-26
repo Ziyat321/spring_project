@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"></html>
+
+<div th:fragment="head_stripe" class="head_stripe">
+    <div>
+        <a href="/category_choice" th:if="${#authorization.expr('hasRole(''ROLE_ADMIN'')')}">
+            <button class="head_button">Создать товар</button>
+        </a>
+        <a href="/products/cart">
+            <button class="head_button">Корзина</button>
+        </a>
+        <a href="/products/orders">
+            <button class="head_button">Заказы</button>
+        </a>
+        <a href="/products/moderate" th:if="${#authorization.expr('hasRole(''ROLE_ADMIN'')')}">
+            <button class="head_button">Модерация</button>
+        </a>
+    </div>
+    <div th:if="${#authorization.expr('!isAuthenticated()')}">
+        <a href="/login">
+            <button class="head_button">Вход</button>
+        </a>
+        <a href="/user_register?user_exists=false">
+            <button class="head_button">Регистрация</button>
+        </a>
+    </div>
+    <div th:if="${#authorization.expr('isAuthenticated()')}">
+        <div class="true">
+            <button class="head_button" th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
+            <div class="false">
+                <button class="signed_button top" th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
+                <a href="/logout">
+                    <button class="signed_button bottom">Выход</button>
+                </a>
+            </div>
+
+
+        </div>
+    </div>
+</div>
