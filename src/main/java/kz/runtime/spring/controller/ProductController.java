@@ -7,6 +7,10 @@ import kz.runtime.spring.service.UserService;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,17 +51,35 @@ public class ProductController {
 
     @GetMapping(path = "/products")
     public String allProducts(Model model,
-                              @RequestParam(name = "categoryId", required = false) Long category) {
+                              @RequestParam(name = "move", required = false) Integer move,
+                              @RequestParam(name = "pageIndex", required = false) Integer pageIndex) {
         User user = userService.getCurrentUser();
         boolean userEntered = user != null;
-        if (category != null) {
-            Category category1 = categoryRepository.findById(category).orElseThrow();
-            List<Product> products = category1.getProducts();
-            model.addAttribute("products", products);
+
+//            List<Product> products = productRepository.findAll();
+        Sort sort = Sort.by(Sort.Order.asc("id"));
+        int elementsNumberOnPage = 7;
+
+
+        Pageable pageable = PageRequest.ofSize(elementsNumberOnPage);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        int totalPages = productPage.getTotalPages();
+
+        if(move == null){
+            pageable = PageRequest.of(0, elementsNumberOnPage, sort);;
+        } else if(move == -1 && pageIndex > 0){
+            pageable = PageRequest.of(pageIndex - 1, elementsNumberOnPage, sort);
+        } else if(move == 1 && pageIndex < totalPages - 1){
+            pageable = PageRequest.of(pageIndex + 1, elementsNumberOnPage, sort);
         } else {
-            List<Product> products = productRepository.findAll();
-            model.addAttribute("products", products);
+            pageable = PageRequest.of(pageIndex, elementsNumberOnPage, sort);
         }
+        productPage = productRepository.findAll(pageable);
+        List<Product> products = productPage.getContent();
+        int pageNumber = productPage.getNumber();
+        model.addAttribute("products", products);
+        model.addAttribute("pageNumber", pageNumber);
+
 
         if (userEntered) {
             model.addAttribute("user", user);
@@ -262,7 +284,7 @@ public class ProductController {
         userWroteReview = review != null;
         boolean authorized = user != null;
         boolean isAdmin = false;
-        if(user != null){
+        if (user != null) {
             isAdmin = user.getRole().equals(Role.ADMIN);
         }
 
@@ -281,7 +303,7 @@ public class ProductController {
     @GetMapping(path = "/review/hide")
     public String hideReview(@RequestParam(name = "reviewId", required = true) Long reviewId,
                              @RequestParam(name = "productId", required = true) Long productId,
-                             Model model){
+                             Model model) {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         review.setPublished(false);
         reviewRepository.save(review);
@@ -431,7 +453,7 @@ public class ProductController {
                                @RequestParam(name = "productId", required = false) Long productId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         reviewRepository.delete(review);
-        if(productId != null) {
+        if (productId != null) {
             return "redirect:/view_product?productId=" + productId;
         } else {
             return "redirect:/products/moderate";
@@ -492,22 +514,22 @@ public class ProductController {
                              @RequestParam(name = "login", required = true) String login,
                              @RequestParam(name = "password", required = true) String password,
                              Model model) {
-            try{
-                User user = userRepository.findUserByLogin(login).orElseThrow();
-                Boolean user_exists = true;
-                model.addAttribute("user_exists", user_exists);
-                return "register_page";
-            }catch (Exception e){
-                User user = new User();
-                user.setRole(Role.USER);
-                user.setLogin(login);
-                user.setPassword(passwordEncoder.encode(password));
-                user.setFirstName(first_name);
-                user.setLastName(last_name);
-                user.setSignUpDate(LocalDateTime.now());
-                userRepository.save(user);
-                return "registered";
-            }
+        try {
+            User user = userRepository.findUserByLogin(login).orElseThrow();
+            Boolean user_exists = true;
+            model.addAttribute("user_exists", user_exists);
+            return "register_page";
+        } catch (Exception e) {
+            User user = new User();
+            user.setRole(Role.USER);
+            user.setLogin(login);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setFirstName(first_name);
+            user.setLastName(last_name);
+            user.setSignUpDate(LocalDateTime.now());
+            userRepository.save(user);
+            return "registered";
+        }
     }
 
 }

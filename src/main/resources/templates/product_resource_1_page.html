@@ -68,5 +68,17 @@
         </div>
     </div>
 </div>
+
+<div style="margin: 50px 0 0 100px; display: flex">
+    <form method="get" action="/products">
+        <input type="hidden" name="pageIndex" th:value="${pageNumber}">
+        <button type="submit" name="move" value="-1">Previous</button>
+    </form>
+    <div th:text="${pageNumber + 1}"></div>
+    <form method="get" action="/products">
+        <input type="hidden" name="pageIndex" th:value="${pageNumber}">
+        <button type="submit" name="move" value="1">Next</button>
+    </form>
+</div>
 </body>
 </html>
