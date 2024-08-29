@@ -49,42 +49,73 @@ public class ProductController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping(path = "/products")
-    public String allProducts(Model model,
-                              @RequestParam(name = "move", required = false) Integer move,
-                              @RequestParam(name = "pageIndex", required = false) Integer pageIndex) {
+    @GetMapping(path = "/products") // ГЛАВНАЯ СТРАНИЦА
+    public String productResource(@RequestParam(name = "prevPage", required = false) Integer prevPage,
+                                  @RequestParam(name = "nextPage", required = false) Integer nextPage,
+                                  @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
+                                  @RequestParam(name = "prevPack", required = false) Integer prevPack,
+                                  @RequestParam(name = "nextPack", required = false) Integer nextPack,
+                                  Model model) {
+
         User user = userService.getCurrentUser();
         boolean userEntered = user != null;
+        boolean isAdmin = user != null && user.getRole().equals(Role.ADMIN);
 
-//            List<Product> products = productRepository.findAll();
+        int pageIndex = 0;
+        final int PACK_NUMBER = 4;
+        final int PAGE_ELEMENTS_NUMBER = 5;
+        if (pageNumber != null) pageIndex = pageNumber;
+        if (prevPage != null) pageIndex--;
+        if (nextPage != null) pageIndex++;
+        if (prevPack != null) pageIndex = (pageIndex + 1) - ((pageIndex + 1) % PACK_NUMBER == 0 ?
+                2 * PACK_NUMBER : (PACK_NUMBER + (pageIndex + 1) % PACK_NUMBER));
+        if (nextPack != null) pageIndex = (pageIndex + 1) + ((pageIndex + 1) % PACK_NUMBER == 0 ?
+                0 : ((PACK_NUMBER - (pageIndex + 1) % PACK_NUMBER)));
+
+
         Sort sort = Sort.by(Sort.Order.asc("id"));
-        int elementsNumberOnPage = 7;
-
-
-        Pageable pageable = PageRequest.ofSize(elementsNumberOnPage);
+        Pageable pageable = PageRequest.of(pageIndex, PAGE_ELEMENTS_NUMBER, sort);
         Page<Product> productPage = productRepository.findAll(pageable);
-        int totalPages = productPage.getTotalPages();
-
-        if(move == null){
-            pageable = PageRequest.of(0, elementsNumberOnPage, sort);;
-        } else if(move == -1 && pageIndex > 0){
-            pageable = PageRequest.of(pageIndex - 1, elementsNumberOnPage, sort);
-        } else if(move == 1 && pageIndex < totalPages - 1){
-            pageable = PageRequest.of(pageIndex + 1, elementsNumberOnPage, sort);
-        } else {
-            pageable = PageRequest.of(pageIndex, elementsNumberOnPage, sort);
-        }
-        productPage = productRepository.findAll(pageable);
         List<Product> products = productPage.getContent();
-        int pageNumber = productPage.getNumber();
-        model.addAttribute("products", products);
-        model.addAttribute("pageNumber", pageNumber);
 
+        int totalPages = productPage.getTotalPages();
+        boolean isPageLast = pageIndex + 1 == totalPages;
+
+        // прев, 4 из 7, след, очень след
+        // 1 ... последняя
 
         if (userEntered) {
             model.addAttribute("user", user);
         }
+
+        // 1 2 3 4
+        // 5 6 7 8
+        // 9 10 11 12
+
+        int startPage;
+        int lastPage;
+        if (nextPack == null && prevPack == null) {
+            startPage = 1;
+            if (pageIndex + 1 >= PACK_NUMBER) {
+                startPage = (pageIndex + 1) % PACK_NUMBER == 0 ?
+                        (pageIndex + 1) - 3 : (pageIndex + 1) - (pageIndex + 1) % PACK_NUMBER + 1;
+            }
+        } else {
+            startPage = pageIndex + 1;
+        }
+
+        lastPage = Math.min(startPage + 3, totalPages);
+
+
+        model.addAttribute("products", products);
         model.addAttribute("user_entered", userEntered);
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("pageNumber", pageIndex + 1);
+        model.addAttribute("isPageLast", isPageLast);
+        model.addAttribute("lastPage", lastPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("totalPages", totalPages);
+
         return "product_resource_1_page";
     }
 

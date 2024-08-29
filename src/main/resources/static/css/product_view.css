@@ -23,14 +23,15 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    /*border-radius: 5px;*/
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .characteristics_block {
     background-color: #afd5ab;
     width: 70%;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    /*border-top-left-radius: 5px;*/
+    /*border-bottom-left-radius: 5px;*/
     padding: 15px;
 }
 
@@ -63,8 +64,8 @@ body {
 
 .price_block {
     width: 30%;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    /*border-top-right-radius: 5px;*/
+    /*border-bottom-right-radius: 5px;*/
     border: #afd5ab 2px solid;
     padding: 15px;
     display: flex;

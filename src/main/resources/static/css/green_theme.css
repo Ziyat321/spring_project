@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: Arial;
+}
+
+
+/*БЛОКИ И КОНТЕЙНЕРЫ*/
+
+/* фон-текст */
+.cnt-w-sg {
+    background-color: white;
+    color: #508c46;
+}
+
+.cnt-w-dg {
+    background-color: white;
+    color: #2f5d28;
+}
+
+.cnt-lg-dg {
+    background-color: #afd5ab;
+    color: #2f5d28;
+}
+
+/* перенос текста */
+.text-wrap {
+    word-wrap: break-word;
+}
+
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* толщина-размер шрифта */
+.font-b14 {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.font-b18 {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.font-b20 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.font-b22 {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.font-b26 {
+    font-weight: bold;
+    font-size: 26px;
+}
+
+.font-s14 {
+    font-size: 14px;
+}
+
+.font-s16 {
+    font-size: 16px;
+}
+
+/* рамки */
+.border-n {
+    border: none;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.border-lg {
+    border: 2px solid #afd5ab;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.border-dg {
+    border: 2px solid #2f5d28;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+
+/* дисплеи */
+.flex-col-sb {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.flex-row-sb {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.inflex-col {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.flex-row-fe {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.flex-row-c {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-col-fe {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.grid-cnt {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    width: 100%;
+    justify-content: center;
+    padding: 0 50px 0 50px;
+}
+
+
+
+
+
+

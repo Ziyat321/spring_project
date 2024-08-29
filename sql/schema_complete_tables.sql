@@ -42,4 +42,25 @@ insert into review (user_id, product_id, published, rating, commentary, review_d
 values (1, 8, true, 4, 'Ryzen Threadripper PRO 7995WX is 42.4x faster than Core i5-7300U. It can run Fortnite at ' ||
                        'recommended settings according to Epic Games.', '2024-07-29 14:25:00');
 
+insert into product(category_id, name, price, visibility)
+values (1, 'a', 10000, true),
+       (1, 'b', 9000, true),
+       (1, 'c', 8000, true),
+       (2, 'd', 1729, true),
+       (2, 'e', 1593, true),
+       (2, 'f', 858, true),
+       (2, 'e', 858, true),
+       (2, 'h', 858, true),
+       (2, 'j', 858, true),
+       (2, 'k', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'l', 858, true),
+       (2, 'g', 1148, true);
+
 

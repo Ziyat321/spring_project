@@ -1,50 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <th:block th:replace="fragments/header.html::header('Main Page', '/css/product_resource_1_page.css')"></th:block>
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>ProductController.firstResource</title>-->
-<!--    <link rel="stylesheet" type="text/css" href="/css/product_resource_1_page.css"/>-->
-<!--</head>-->
+<!--<th:block th:replace="fragments/header.html::header('Main Page', '/css/green_theme.css')"></th:block>-->
+
 <body>
 <div th:replace="fragments/head_stripe.html::head_stripe"></div>
-<!--<div class="head_stripe">-->
-<!--    <div>-->
-<!--        <a href="/category_choice">-->
-<!--            <button class="head_button">Создать товар</button>-->
-<!--        </a>-->
-<!--        <a href="/products/cart">-->
-<!--            <button class="head_button">Корзина</button>-->
-<!--        </a>-->
-<!--        <a href="/products/orders">-->
-<!--            <button class="head_button">Заказы</button>-->
-<!--        </a>-->
-<!--        <a href="/products/moderate">-->
-<!--            <button class="head_button">Модерация</button>-->
-<!--        </a>-->
-<!--    </div>-->
-<!--    <div th:if="${user_entered == false}">-->
-<!--        <a href="/login">-->
-<!--            <button class="head_button">Вход</button>-->
-<!--        </a>-->
-<!--        <a href="/user_register?user_exists=false">-->
-<!--            <button class="head_button">Регистрация</button>-->
-<!--        </a>-->
-<!--    </div>-->
-<!--    <div th:if="${user_entered == true}">-->
-<!--        <div class="true">-->
-<!--            <button class="head_button" th:text="${'Hi, ' + user.getFirstName()}"></button>-->
-<!--            <div class="false">-->
-<!--                <button class="signed_button top" th:text="${'Hi, ' + user.getFirstName()}"></button>-->
-<!--                <a href="/logout">-->
-<!--                    <button class="signed_button bottom">Выход</button>-->
-<!--                </a>-->
-<!--            </div>-->
 
 
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
 <div class="products_container">
     <div th:each="product : ${products}" class="product_block">
@@ -69,15 +31,44 @@
     </div>
 </div>
 
-<div style="margin: 50px 0 0 100px; display: flex">
-    <form method="get" action="/products">
-        <input type="hidden" name="pageIndex" th:value="${pageNumber}">
-        <button type="submit" name="move" value="-1">Previous</button>
+<div style="display: flex;">
+    <form th:if="${pageNumber > 4}" method="get" action="/products">
+        <button type="submit" name="prevPack" value="1"><<</button>
+        <input type="hidden" name="pageNumber" th:value="${pageNumber - 1}">
     </form>
-    <div th:text="${pageNumber + 1}"></div>
-    <form method="get" action="/products">
-        <input type="hidden" name="pageIndex" th:value="${pageNumber}">
-        <button type="submit" name="move" value="1">Next</button>
+
+    <form th:if="${pageNumber > 1}" method="get" action="/products">
+        <button type="submit" name="prevPage" value="1"><</button>
+        <input type="hidden" name="pageNumber" th:value="${pageNumber - 1}">
+    </form>
+
+    <form th:if="${pageNumber > 4}" method="get" action="/products">
+        <button type="submit" name="pageNumber" value="0">1</button>
+    </form>
+
+    <span th:if="${pageNumber > 4}">...</span>
+
+    <form th:each="i : ${#numbers.sequence(startPage, lastPage)}" method="get" action="/products">
+        <button th:if="${i != pageNumber}"
+                type="submit" name="pageNumber" th:text="${i}" th:value="${i - 1}"></button>
+        <button th:if="${i == pageNumber}" style="background-color: #2f5d28"
+                type="submit" name="pageNumber" th:text="${i}" th:value="${i - 1}"></button>
+    </form>
+
+    <span th:if="${totalPages - startPage >= 4}">...</span>
+
+    <form th:if="${totalPages - startPage >= 4}" method="get" action="/products">
+        <button type="submit" name="pageNumber" th:value="${totalPages - 1}" th:text="${totalPages}"></button>
+    </form>
+
+    <form th:if="${isPageLast == false}" method="get" action="/products">
+        <button type="submit" name="nextPage" value="1">></button>
+        <input type="hidden" name="pageNumber" th:value="${pageNumber - 1}">
+    </form>
+
+    <form th:if="${lastPage != totalPages}" method="get" action="/products">
+        <button type="submit" name="nextPack" value="1">>></button>
+        <input type="hidden" name="pageNumber" th:value="${pageNumber - 1}">
     </form>
 </div>
 </body>
