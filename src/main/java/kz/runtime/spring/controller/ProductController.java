@@ -1,6 +1,7 @@
 package kz.runtime.spring.controller;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.validation.OverridesAttribute;
 import kz.runtime.spring.entity.*;
 import kz.runtime.spring.repository.*;
 import kz.runtime.spring.service.UserService;
@@ -116,6 +117,9 @@ public class ProductController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("totalPages", totalPages);
 
+        Sort sortCategory = Sort.by(Sort.Order.asc("name"));
+        List<Category> categories = categoryRepository.findAll(sortCategory);
+        model.addAttribute("categories", categories);
         return "product_resource_1_page";
     }
 
@@ -563,4 +567,30 @@ public class ProductController {
         }
     }
 
+    @GetMapping(path = "/login")
+    public String signIn(@RequestParam(name = "error", required = false) String error,
+                         Model model) {
+        boolean errorExists = false;
+        if(error != null) errorExists = true;
+        model.addAttribute("errorExists", errorExists);
+        return "sign_in_page";
+    }
+
+    @GetMapping(path = "/products/by_category")
+    public String productsByCategory(@RequestParam(name = "categoryId", required = true) Long categoryId,
+                                     Model model){
+        List<Product> products = productRepository.findAllByCategoryId(categoryId);
+        List<Characteristic> characteristics = characteristicRepository.findAllByCategoryId(categoryId);
+        Map<Characteristic, List<CharacteristicDescription>> characteristicListMap = new HashMap<>();
+        for (Characteristic characteristic : characteristics) {
+            List<CharacteristicDescription> characteristicDescriptions =
+                    characteristicDescriptionRepository.findAllByCharacteristic(characteristic);
+            characteristicListMap.put(characteristic, characteristicDescriptions);
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("characteristics", characteristics);
+        model.addAttribute("characteristicListMap", characteristicListMap);
+        return "products_by_category_page";
+    }
 }

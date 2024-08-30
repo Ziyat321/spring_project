@@ -7,7 +7,6 @@
 <div th:replace="fragments/head_stripe.html::head_stripe"></div>
 
 
-
 <div class="products_container">
     <div th:each="product : ${products}" class="product_block">
         <div th:text="${product.getName()}" class="product_name"></div>
@@ -69,6 +68,15 @@
     <form th:if="${lastPage != totalPages}" method="get" action="/products">
         <button type="submit" name="nextPack" value="1">>></button>
         <input type="hidden" name="pageNumber" th:value="${pageNumber - 1}">
+    </form>
+</div>
+
+
+<div style="display: flex;">
+    <form th:each="category : ${categories}" method="get" action="/products/by_category">
+        <button type="submit" name="categoryId" th:value="${category.getId()}" th:text="${category.getName()}">
+
+        </button>
     </form>
 </div>
 </body>

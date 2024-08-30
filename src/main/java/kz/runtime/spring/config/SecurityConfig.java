@@ -30,11 +30,14 @@ public class SecurityConfig {
         });
 
         httpSecurity.formLogin(formLoginConfigurer -> {
+            formLoginConfigurer.loginPage("/login");
+            formLoginConfigurer.usernameParameter("login");
+            formLoginConfigurer.passwordParameter("password");
             formLoginConfigurer.defaultSuccessUrl("/products");
         });
 
-        httpSecurity.formLogin(formLoginConfigurer ->{
-
+        httpSecurity.logout(logoutConfigurer ->{
+            logoutConfigurer.logoutSuccessUrl("/products");
         });
 
         return httpSecurity.build();
