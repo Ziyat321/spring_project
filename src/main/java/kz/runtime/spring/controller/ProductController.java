@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +50,9 @@ public class ProductController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @GetMapping(path = "/products") // ГЛАВНАЯ СТРАНИЦА
     public String productResource(@RequestParam(name = "prevPage", required = false) Integer prevPage,
@@ -571,15 +575,19 @@ public class ProductController {
     public String signIn(@RequestParam(name = "error", required = false) String error,
                          Model model) {
         boolean errorExists = false;
-        if(error != null) errorExists = true;
+        if (error != null) errorExists = true;
         model.addAttribute("errorExists", errorExists);
         return "sign_in_page";
     }
 
     @GetMapping(path = "/products/by_category")
     public String productsByCategory(@RequestParam(name = "categoryId", required = true) Long categoryId,
-                                     Model model){
-        List<Product> products = productRepository.findAllByCategoryId(categoryId);
+                                     @RequestParam(name = "descriptionId", required = false) List<Long> descriptionIds,
+                                     Model model) {
+        List<Product> products = new ArrayList<>();
+        if(descriptionIds == null){
+            products = productRepository.findAllByCategoryId(categoryId);
+        }
         List<Characteristic> characteristics = characteristicRepository.findAllByCategoryId(categoryId);
         Map<Characteristic, List<CharacteristicDescription>> characteristicListMap = new HashMap<>();
         for (Characteristic characteristic : characteristics) {
@@ -587,10 +595,40 @@ public class ProductController {
                     characteristicDescriptionRepository.findAllByCharacteristic(characteristic);
             characteristicListMap.put(characteristic, characteristicDescriptions);
         }
-
-        model.addAttribute("products", products);
         model.addAttribute("characteristics", characteristics);
         model.addAttribute("characteristicListMap", characteristicListMap);
+
+
+        if (descriptionIds != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < descriptionIds.size(); i++) {
+                CharacteristicDescription characteristicDescription =
+                        characteristicDescriptionRepository.findById(descriptionIds.get(i)).orElseThrow();
+                Long characteristicId = characteristicDescription.getCharacteristic().getId();
+                String description = characteristicDescription.getDescription();
+
+                stringBuilder.append("select p.id from product p ")
+                        .append("join characteristic_description cd on p.id = cd.product_id where ");
+                stringBuilder.append("cd.description='").append(description).append("' ")
+                        .append("and cd.characteristic_id = ").append(characteristicId);
+                if (i != descriptionIds.size() - 1) {
+                    stringBuilder.append(" intersect ");
+                }
+            }
+            List<Map<String, Object>> results = jdbcTemplate.queryForList(stringBuilder.toString());
+            for (Map<String, Object> result : results) {
+                for (String column : result.keySet()) {
+                    Long productId = (Long) result.get(column);
+                    Product product = productRepository.findById(productId).orElseThrow();
+                    products.add(product);
+                }
+            }
+
+
+        }
+        model.addAttribute("products", products);
+
         return "products_by_category_page";
     }
 }

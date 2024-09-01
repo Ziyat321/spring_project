@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <th:block
         th:replace="fragments/header.html::header('Products by Category', '/css/product_resource_1_page.css')"></th:block>
 
@@ -30,12 +30,14 @@
 </div>
 
 <div style="display: flex;">
-    <form th:each="characteristic : ${characteristics}" method="get" action="/products/by_category">
-        <select>
+    <form method="get" action="/products/by_category">
+        <select th:each="characteristic : ${characteristics}" name="descriptionId">
             <option th:text="${characteristic.getName()}" disabled selected></option>
             <option th:each="characteristicDescription : ${characteristicListMap.get(characteristic)}"
-            th:text="${characteristicDescription.getDescription()}"></option>
+            th:text="${characteristicDescription.getDescription()}"
+                    th:value="${characteristicDescription.getId()}"></option>
         </select>
+        <button type="submit" name="categoryId" th:value="${characteristics.get(0).getCategory().getId()}">Filter</button>
     </form>
 </div>
 
