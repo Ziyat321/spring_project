@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<th:block th:replace="fragments/header.html::header('Main Page', '/css/product_resource_1_page.css')"></th:block>
-<!--<th:block th:replace="fragments/header.html::header('Main Page', '/css/green_theme.css')"></th:block>-->
+<th:block th:replace="fragments/header.html::header('Main Page')"></th:block>
 
 <body>
 <div th:replace="fragments/head_stripe.html::head_stripe"></div>
 
-
-<div class="products_container">
-    <div th:each="product : ${products}" class="product_block">
-        <div th:text="${product.getName()}" class="product_name"></div>
-        <div class="buttons_container">
+<div class="grid-cnt">
+    <div th:each="product : ${products}" class="flex-col-sb cnt-lg-dg border-n m-t15 w-250 p-t15 p-r10 p-b10 p-l10 h-100">
+        <div th:text="${product.getName()}" class="font-b18 text-ellipsis"></div>
+        <div class="flex-row-sb m-t5">
             <form method="get" action="/products/change">
-                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                <button type="submit" name="productId" th:value="${product.getId()}"
+                        class="h-20 cnt-w-dg border-n cursor-p p-r12 p-l12 hov1">
                     Edit
                 </button>
             </form>
             <form method="get" action="/view_product">
-                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                <button type="submit" name="productId" th:value="${product.getId()}"
+                        class="h-20 cnt-w-dg border-n cursor-p p-r12 p-l12 hov1">
                     View
                 </button>
             </form>
             <form method="get" action="/products/add_to_cart">
-                <button type="submit" name="productId" th:value="${product.getId()}" class="product_button">
+                <button type="submit" name="productId" th:value="${product.getId()}"
+                        class="h-20 cnt-w-dg border-n cursor-p p-r12 p-l12 hov1">
                     Add to Cart
                 </button>
             </form>
@@ -30,6 +31,7 @@
     </div>
 </div>
 
+<!-- нумерация страниц -->
 <div style="display: flex;">
     <form th:if="${pageNumber > 4}" method="get" action="/products">
         <button type="submit" name="prevPack" value="1"><<</button>
@@ -71,7 +73,7 @@
     </form>
 </div>
 
-
+<!-- фильтрация по категориям -->
 <div style="display: flex;">
     <form th:each="category : ${categories}" method="get" action="/products/by_category">
         <button type="submit" name="categoryId" th:value="${category.getId()}" th:text="${category.getName()}">

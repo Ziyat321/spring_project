@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
-<!--<link rel="stylesheet" href="/css/cart_page.css">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Cart</title>-->
-<!--</head>-->
-<th:block th:replace="fragments/header.html::header('Cart Page', '/css/cart_page.css')"></th:block>
+<th:block th:replace="fragments/header.html::header('Cart Page')"></th:block>
+
 <body>
+
+<div th:replace="fragments/head_stripe.html::head_stripe"></div>
+
 <div th:if="${isCartEmpty == false}">
-    <div class="container" th:each="cart:${carts}">
-        <div class="info_block">
-            <div class="product_name" th:text="${cart.getProduct().name}"></div>
-            <div class="product_price" th:text="${cart.getAmount() * cart.getProduct().getPrice()} + ' тг.'"></div>
+    <div class="m-t15 m-b10 m-l20 flex-col p-15 border-lg w-600" th:each="cart:${carts}">
+        <div class="flex-row-sb">
+            <div class="w-70pc font-b20 text-wrap cnt-w-dg" th:text="${cart.getProduct().name}"></div>
+            <div class="font-b20 text-wrap cnt-w-dg" th:text="${cart.getAmount() * cart.getProduct().getPrice()} + ' тг.'"></div>
         </div>
-        <div class="buttons_block">
+        <div class="flex-row-fe m-t10">
             <form method="get" action="/products/cart/delete">
                 <input type="hidden" name="cartId" th:value="${cart.id}">
-                <button class="delete_button">Delete</button>
+                <button class="border-n cursor-p cnt-lg-dg font-s16 p-t5 p-r10 p-b5 p-l10 hov3">Delete</button>
             </form>
-            <div class="amount_button">
+            <div class="flex-row-c m-l15 cnt-w-dg border-lg">
                 <form method="get" action="/products/cart/decrement">
                     <input type="hidden" name="cartId" th:value="${cart.id}">
-                    <button name="decrement" value="1">-</button>
+                    <button name="decrement" value="1"
+                    class="font-s16 p-l10 p-r10 cursor-p border-n">-</button>
                 </form>
                 <span th:text="${cart.getAmount()}"></span>
                 <form method="get" action="/products/cart/increment">
                     <input type="hidden" name="cartId" th:value="${cart.id}">
-                    <button name="increment" value="1">+</button>
+                    <button name="increment" value="1"
+                    class="font-s16 p-l10 p-r10 cursor-p border-n">+</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="order_container">
-        <div class="stripe"></div>
-        <div class="total_price" th:text="${sum + ' тг.'}"></div>
+    <div class="w-600 flex-col-fe m-t30 m-b20 m-l20">
+        <div class="m-b4 h-1 w-100pc cnt-gg-w"></div>
+        <div class="font-b22 cnt-w-gg" th:text="${sum + ' тг.'}"></div>
         <form method="get" action="/products/place_order">
-            <button class="order_button">Place the order</button>
+            <button class="cnt-gg-w cursor-p hov3 border-n font-s18 p-t10 p-r10 p-b10 p-l10">Place the order</button>
         </form>
     </div>
 
 </div>
 
-<div th:if="${isCartEmpty == true}" class="empty_cart">Корзина пуста.</div>
+<div th:if="${isCartEmpty == true}" class="cnt-w-dg font-b18 m-t15 m-l20">Корзина пуста.</div>
 
 
 <form method="get" action="/products/update_cart">

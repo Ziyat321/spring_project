@@ -21,10 +21,41 @@
     color: #2f5d28;
 }
 
+.hov1:hover { /*.cnt-w-dg*/
+    background-color: #7bb972;
+    color: white;
+}
+
+.cnt-dg-w {
+    background-color: #2f5d28;
+    color: white;
+}
+
+.hov2:hover { /*..cnt-dg-w*/
+    background-color: white;
+    color: #2f5d28;
+}
+
 .cnt-lg-dg {
     background-color: #afd5ab;
     color: #2f5d28;
 }
+
+.hov3:hover { /*.cnt-lg-dg*/
+    background-color: #2f5d28;
+    color: white;
+}
+
+.cnt-w-gg {
+    background-color: white;
+    color: #91c58a;
+}
+
+.cnt-gg-w {
+    background-color: #91c58a;
+    color: white;
+}
+
 
 /* перенос текста */
 .text-wrap {
@@ -68,6 +99,10 @@
 
 .font-s16 {
     font-size: 16px;
+}
+
+.font-s18 {
+    font-size: 18px;
 }
 
 /* рамки */
@@ -136,6 +171,10 @@
     align-items: flex-end;
 }
 
+.ai-c {
+    align-items: center;
+}
+
 .grid-cnt {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -145,7 +184,257 @@
 }
 
 
+/* отступы */
+.p-15 {
+    padding: 15px;
+}
+
+.p-6 {
+    padding: 6px;
+}
+
+.p-t5 {
+    padding-top: 5px;
+}
+
+.p-t10 {
+    padding-top: 10px;
+}
+
+.p-t15 {
+    padding-top: 15px;
+}
+
+.p-t20 {
+    padding-top: 20px;
+}
+
+.p-b5 {
+    padding-bottom: 5px;
+}
+
+.p-b10 {
+    padding-bottom: 10px;
+}
+
+.p-r8 {
+    padding-right: 8px;
+}
+
+.p-r10 {
+    padding-right: 10px;
+}
+
+.p-r12 {
+    padding-right: 12px;
+}
+
+.p-r20 {
+    padding-right: 20px;
+}
+
+.p-l8 {
+    padding-left: 8px;
+}
+
+.p-l10 {
+    padding-left: 10px;
+}
+
+.p-l12 {
+    padding-left: 12px;
+}
+
+.p-l20 {
+    padding-left: 20px;
+}
+
+.p-l25 {
+    padding-left: 25px;
+}
+
+.m-t5 {
+    margin-top: 5px;
+}
+
+.m-t10 {
+    margin-top: 10px;
+}
+
+.m-t15 {
+    margin-top: 15px;
+}
+
+.m-t20 {
+    margin-top: 20px;
+}
+
+.m-t30 {
+    margin-top: 30px;
+}
+
+.m-t40 {
+    margin-top: 40px;
+}
+
+.m-t50 {
+    margin-top: 50px;
+}
+
+.m-b4 {
+    margin-bottom: 4px;
+}
+
+.m-b10 {
+    margin-bottom: 10px;
+}
+
+.m-b15 {
+    margin-bottom: 15px;
+}
+
+.m-b20 {
+    margin-bottom: 20px;
+}
+
+.m-l5 {
+    margin-left: 5px;
+}
+
+.m-l15 {
+    margin-left: 15px;
+}
+
+.m-l20 {
+    margin-left: 20px;
+}
+
+.m-l80pc {
+    margin-left: 80%;
+}
 
 
+/* размеры */
+.h-1 {
+    height: 1px;
+}
+
+.h-20 {
+    height: 20px;
+}
+
+.h-25 {
+    height: 25px;
+}
+
+.h-29 {
+    height: 29px;
+}
+
+.h-40 {
+    height: 40px;
+}
+
+.h-100 {
+    height: 100px;
+}
+
+.w-250 {
+    width: 250px;
+}
+
+.w-600 {
+    width: 600px;
+}
+
+.w-1200 {
+    width: 1200px;
+}
+
+.w-10pc {
+    width: 10%;
+}
+
+.w-20pc {
+    width: 20%;
+}
+
+.w-30pc {
+    width: 30%;
+}
+
+.w-35pc {
+    width: 35%;
+}
+
+.w-50pc {
+    width: 50%;
+}
+
+.w-60pc {
+    width: 60%;
+}
+
+.w-70pc {
+    width: 70%;
+}
+
+.w-100pc {
+    width: 100%;
+}
 
 
+/* специфические классы */
+.true {
+    position: relative;
+}
+
+.true:hover .false {
+    visibility: visible;
+}
+
+.false {
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+}
+
+.main_page_button {
+    position: fixed;
+    bottom: 20px;
+    right: 200px;
+    background-color: #afd5ab;
+    color: #2f5d28;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main_page_button:hover {
+    background-color: #2f5d28;
+    color: white;
+}
+
+.textarea {
+    overflow: auto; /* Добавляем скролл, если текст выходит за пределы */
+    white-space: pre-wrap; /* Перенос строки и пробелы сохраняются */
+}
+
+.cursor-p {
+    cursor: pointer;
+}
+
+.top {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom: none;
+}
+
+.bottom {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top: none;
+}

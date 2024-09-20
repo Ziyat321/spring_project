@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en"></html>
 
-<div th:fragment="head_stripe" class="head_stripe">
+<div th:fragment="head_stripe" class="flex-row-sb ai-c w-100pc h-40 cnt-dg-w p-l20 p-r20">
     <div>
         <a href="/category_choice" th:if="${#authorization.expr('hasRole(''ROLE_ADMIN'')')}">
-            <button class="head_button">Создать товар</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Создать товар</button>
         </a>
         <a href="/products/cart">
-            <button class="head_button">Корзина</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Корзина</button>
         </a>
         <a href="/products/orders">
-            <button class="head_button">Заказы</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Заказы</button>
         </a>
         <a href="/products/moderate" th:if="${#authorization.expr('hasRole(''ROLE_ADMIN'')')}">
-            <button class="head_button">Модерация</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Модерация</button>
         </a>
     </div>
     <div th:if="${#authorization.expr('!isAuthenticated()')}">
         <a href="/login">
-            <button class="head_button">Вход</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Вход</button>
         </a>
         <a href="/user_register?user_exists=false">
-            <button class="head_button">Регистрация</button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2">Регистрация</button>
         </a>
     </div>
     <div th:if="${#authorization.expr('isAuthenticated()')}">
         <div class="true">
-            <button class="head_button" th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
+            <button class="cnt-dg-w h-25 p-l10 p-r10 border-n cursor-p font-s16 hov2"
+                    th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
             <div class="false">
-                <button class="signed_button top" th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
+                <button class="h-29 cnt-dg-w p-l8 p-r8 border-dg cursor-p font-s16 w-100pc top hov2"
+                        th:text="${'Hi, ' + @userService.getCurrentUser().getFirstName()}"></button>
                 <a href="/logout">
-                    <button class="signed_button bottom">Выход</button>
+                    <button class="h-29 cnt-dg-w p-l8 p-r8 border-dg cursor-p font-s16 w-100pc bottom hov2">
+                        Выход</button>
                 </a>
             </div>
 
